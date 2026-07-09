@@ -6,6 +6,7 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -17,25 +18,85 @@ enum Role {
 }
 
 model User {
-  id           String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  name         String
+  name String
 
-  email        String   @unique
+  email String @unique
 
-  mobile        String?
+  mobile String? @unique
 
-  password     String
+  password String
 
-  role          Role     @default(STUDENT)
+  role Role @default(STUDENT)
 
-  deviceId     String?
+  deviceId String?
 
   sessionToken String?
 
-  isActive      Boolean  @default(true)
+  isActive Boolean @default(true)
 
-  createdAt    DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  updatedAt    DateTime @updatedAt
+  updatedAt DateTime @updatedAt
+}
+
+model Course {
+  id String @id @default(cuid())
+
+  courseName String @unique
+
+  description String?
+
+  thumbnail String?
+
+  accessType String @default("paid")
+
+  price Int?
+
+  strikePrice Int?
+
+  validityMonths Int?
+
+  enableEmi Boolean @default(false)
+
+  installments Json?
+
+  subjects String[]
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  videos Video[]
+}
+
+model Video {
+  id String @id @default(cuid())
+
+  courseId String
+
+  subject String?
+
+  chapter String?
+
+  videoName String
+
+  youtubeUrl String
+
+  description String?
+
+  duration String?
+
+  order Int?
+
+  isPreview Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }

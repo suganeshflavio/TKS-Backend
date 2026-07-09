@@ -26,7 +26,7 @@ import { env } from "../config/env";
 export interface JwtPayload {
   userId: string;
   role: string;
-  sessionToken: string;
+  sessionToken: string | null;
 }
 
 export const generateToken = (payload: JwtPayload) => {

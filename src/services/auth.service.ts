@@ -15,7 +15,8 @@ export const loginUser = async (
 
   const isMatch = await comparePassword(
     password,
-    user.password
+    user.password,
+
   );
 
   if (!isMatch) {
