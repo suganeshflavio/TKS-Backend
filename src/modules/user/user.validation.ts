@@ -15,7 +15,10 @@ export const createUserSchema = z.object({
         .min(6, "Password should contain minimum 6 characters"),
 
     mobile: z
-        .string()
-        .optional()
+        .string(),
+        // .optional()
+
+        isActive: z
+        .boolean().optional()
 
 });

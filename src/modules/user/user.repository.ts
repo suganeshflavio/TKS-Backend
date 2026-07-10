@@ -103,6 +103,7 @@ export const getUsersRepository = async (
                 name: true,
                 email: true,
                 mobile: true,
+                isActive: true,
                 role: true,
                 createdAt: true,
                 updatedAt: true

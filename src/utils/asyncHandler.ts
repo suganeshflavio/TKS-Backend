@@ -6,7 +6,7 @@ import {
 
 export const asyncHandler = (
 
-    fn: Function
+    fn: any
 
 ) => {
 

@@ -12,9 +12,9 @@ export const createCourseSchema = z
             .string()
             .min(3, "Course name must contain minimum 3 characters"),
 
-        description: z
-            .string()
-            .optional(),
+        // description: z
+        //     .string()
+        //     .optional(),
 
         thumbnail: z
             .string()
@@ -22,7 +22,7 @@ export const createCourseSchema = z
 
         accessType: z
             .enum(["free", "paid"])
-            .default("paid"),
+            .default("paid").optional(),
 
         price: z
             .number()
@@ -36,7 +36,7 @@ export const createCourseSchema = z
             .number()
             .optional(),
 
-        enableEmi: z.boolean(),
+        enableEmi: z.boolean().optional(),
 
         installments: z
             .array(installmentSchema)
@@ -47,31 +47,31 @@ export const createCourseSchema = z
             .default([])
 
     })
-    .superRefine((data, ctx) => {
+    // .superRefine((data, ctx) => {
 
-        if (
-            data.accessType === "paid" &&
-            !data.price
-        ) {
-            ctx.addIssue({
-                code: "custom",
-                path: ["price"],
-                message: "Price is required for paid courses"
-            });
-        }
+    //     if (
+    //         data.accessType === "paid" &&
+    //         !data.price
+    //     ) {
+    //         ctx.addIssue({
+    //             code: "custom",
+    //             path: ["price"],
+    //             message: "Price is required for paid courses"
+    //         });
+    //     }
 
-        if (
-            data.enableEmi &&
-            (!data.installments || data.installments.length === 0)
-        ) {
-            ctx.addIssue({
-                code: "custom",
-                path: ["installments"],
-                message: "Installments are required when EMI is enabled"
-            });
-        }
+    //     if (
+    //         data.enableEmi &&
+    //         (!data.installments || data.installments.length === 0)
+    //     ) {
+    //         ctx.addIssue({
+    //             code: "custom",
+    //             path: ["installments"],
+    //             message: "Installments are required when EMI is enabled"
+    //         });
+    //     }
 
-    });
+    // });
 
     export const updateCourseSchema = createCourseSchema.extend({
 

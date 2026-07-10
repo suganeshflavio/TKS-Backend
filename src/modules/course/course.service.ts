@@ -25,6 +25,20 @@ export const createCourseService = async (
         );
     }
 
+      if (payload.accessType === "free") {
+
+    payload.enableEmi = false;
+
+    payload.price = null as any;
+
+    payload.strikePrice = null as any;
+
+    payload.validityMonths = null as any;
+
+    payload.installments = null as any;
+  }
+
+
     const course = await createCourseRepository(payload);
 
     return course;

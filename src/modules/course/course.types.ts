@@ -7,7 +7,7 @@ export interface InstallmentDto {
 
 export interface CreateCourseDto {
     courseName: string;
-    description?: string;
+    // description?: string;
     thumbnail?: string;
 
     accessType?: "free" | "paid";
@@ -35,9 +35,7 @@ export interface GetCourseQueryDto {
 export interface UpdateCourseDto {
 
     courseName: string;
-
-    description?: string;
-
+    // description?: string;
     thumbnail?: string;
 
     accessType?: "free" | "paid";
@@ -57,3 +55,6 @@ export interface UpdateCourseDto {
     isActive?: boolean;
 
 }
+
+export interface UpdateCourseDto
+  extends Partial<CreateCourseDto> {}

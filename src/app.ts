@@ -7,7 +7,8 @@ import courseRoutes from "./modules/course/course.routes";
 import videoRoutes from "./modules/video/video.routes";
 
 const app = express();
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use(express.json());
@@ -16,24 +17,19 @@ app.use("/api/auth", authRoutes);
 
 app.use("/api/videos", videoRoutes);
 
-app.use(
-    "/api/courses",
-    courseRoutes
-);
+app.use("/api/courses", courseRoutes);
 
 app.use(errorMiddleware);
-
 app.use(
+  "/api/users",
 
-    "/api/users",
-
-    userRoutes
-
+  userRoutes,
 );
-app.get("/", (req, res) => {
-    res.json({
-        message: "Tks Academy Backend Running"
-    });
+// app.use(errorHandler);
+app.get("/", (_, res) => {
+  res.json({
+    message: "Tks Academy Backend Running",
+  });
 });
 
 export default app;

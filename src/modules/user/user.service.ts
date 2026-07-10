@@ -37,7 +37,7 @@ export const createStudentService = async (
 
     if (existingUser) {
 
-        throw new Error("Email already exists");
+        throw new AppError("Email already exists", 400);
 
     }
 

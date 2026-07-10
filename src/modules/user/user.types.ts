@@ -8,6 +8,6 @@ export interface UpdateUserDto {
 
     password?: string;
 
-    isActive: boolean;
+    isActive?: boolean;
 
 }

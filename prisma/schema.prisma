@@ -46,11 +46,9 @@ model Course {
 
   courseName String @unique
 
-  description String?
-
   thumbnail String?
 
-  accessType String @default("paid")
+  accessType String?
 
   price Int?
 
@@ -58,7 +56,7 @@ model Course {
 
   validityMonths Int?
 
-  enableEmi Boolean @default(false)
+  enableEmi Boolean?
 
   installments Json?
 
