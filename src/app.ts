@@ -5,6 +5,7 @@ import userRoutes from "./modules/user/user.routes";
 import { errorMiddleware } from "./middleware/error.middleware";
 import courseRoutes from "./modules/course/course.routes";
 import videoRoutes from "./modules/video/video.routes";
+import userAccessRoutes from "./modules/user-access/userAccess.route";
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/videos", videoRoutes);
 
 app.use("/api/courses", courseRoutes);
+
+app.use("/api/user-access", userAccessRoutes);
 
 app.use(errorMiddleware);
 app.use(

@@ -32,9 +32,13 @@ model User {
 
   deviceId String?
 
+  accesses UserAccess[]
+
   sessionToken String?
 
   isActive Boolean @default(true)
+
+  isAccess Boolean @default(false)
 
   createdAt DateTime @default(now())
 
@@ -53,6 +57,8 @@ model Course {
   price Int?
 
   strikePrice Int?
+
+  userAccesses UserAccess[]
 
   validityMonths Int?
 
@@ -90,6 +96,8 @@ model Video {
 
   order Int?
 
+  isActive Boolean @default(true)
+
   isPreview Boolean @default(false)
 
   createdAt DateTime @default(now())
@@ -97,4 +105,30 @@ model Video {
   updatedAt DateTime @updatedAt
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  userAccesses UserAccess[]
+}
+
+model UserAccess {
+  id String @id @default(cuid())
+
+  userId   String
+  courseId String
+  videoId  String
+
+  subject String
+  chapter String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, videoId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([videoId])
 }

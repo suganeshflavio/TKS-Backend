@@ -22,4 +22,10 @@ export const createVideoSchema = z.object({
 
 });
 
-export const updateVideoSchema = createVideoSchema;
+// export const updateVideoSchema = createVideoSchema;
+
+export const updateVideoSchema = createVideoSchema.extend({
+
+    isActive: z.boolean().optional()
+
+});

@@ -104,6 +104,7 @@ export const getUsersRepository = async (
                 email: true,
                 mobile: true,
                 isActive: true,
+                isAccess: true,
                 role: true,
                 createdAt: true,
                 updatedAt: true
@@ -154,6 +155,8 @@ export const getUserByIdRepository = async (
 
             isActive: true,
 
+            isAccess: true,
+
             createdAt: true,
 
             updatedAt: true
@@ -195,7 +198,9 @@ export const updateUserRepository = async (
 
             role: true,
 
-            isActive: true
+            isActive: true,
+            
+            isAccess: true
 
         }
 

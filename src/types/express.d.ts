@@ -1,3 +1,5 @@
+import "express";
+
 export interface AuthRequestUser {
     userId: string;
     role: "ADMIN" | "STUDENT";
@@ -11,3 +13,5 @@ declare global {
         }
     }
 }
+
+export {};

@@ -18,6 +18,8 @@ export interface CreateVideoDto {
 
     isPreview?: boolean;
 
+    isActive?: boolean;
+
 }
 
 export interface GetVideoQueryDto {
@@ -33,6 +35,8 @@ export interface GetVideoQueryDto {
     subject?: string;
 
     chapter?: string;
+
+    isActive?: boolean;
 
 }
 
