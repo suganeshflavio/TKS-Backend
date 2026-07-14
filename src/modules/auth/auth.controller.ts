@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 
-import { loginSchema } from "./auth.validation";
+import { adminLoginSchema, studentLoginSchema } from "./auth.validation";
 
-import { adminLogin } from "./auth.service";
+import { adminLogin, logout, studentLogin } from "./auth.service";
 
 import {
     errorResponse,
     successResponse
 } from "../../utils/response";
 
-export const login = async (
+export const adminLoginController = async (
 
     req: Request,
 
@@ -19,7 +19,7 @@ export const login = async (
 
     try {
 
-        const payload = loginSchema.parse(req.body);
+        const payload = adminLoginSchema.parse(req.body);
 
         const data = await adminLogin(payload);
 
@@ -48,5 +48,51 @@ export const login = async (
         );
 
     }
+
+};
+
+export const studentLoginController = async (
+    req: Request,
+    res: Response
+) => {
+
+    try {
+
+        const payload = studentLoginSchema.parse(req.body);
+
+        const data = await studentLogin(payload);
+
+        return successResponse(
+            res,
+            "Login Successful",
+            data
+        );
+
+    } catch (error: any) {
+
+        return errorResponse(
+            res,
+            error.message,
+            400
+        );
+
+    }
+
+};
+
+
+export const logoutController = async (
+    req: Request,
+    res: Response
+) => {
+
+    await logout(
+        req.user!.userId
+    );
+
+    return successResponse(
+        res,
+        "Logout Successful"
+    );
 
 };

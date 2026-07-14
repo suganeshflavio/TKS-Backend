@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const loginSchema = z.object({
+export const adminLoginSchema = z.object({
   email: z
     .string()
     .email("Invalid email address"),
@@ -12,4 +12,11 @@ export const loginSchema = z.object({
   deviceId: z
     .string()
     .min(1, "Device ID is required")
+});
+
+
+export const studentLoginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6),
+  deviceId: z.string().min(1)
 });

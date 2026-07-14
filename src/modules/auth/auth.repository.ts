@@ -26,3 +26,26 @@ export const updateSession = async (
   });
 
 };
+
+
+export const clearSession = async (
+    userId: string
+) => {
+
+    return prisma.user.update({
+
+        where: {
+            id: userId
+        },
+
+        data: {
+
+            sessionToken: null,
+
+            deviceId: null
+
+        }
+
+    });
+
+};
