@@ -6,7 +6,7 @@ export const isAdmin = (
     next: NextFunction
 ) => {
 
-    if (req.user?.role !== "ADMIN") {
+    if (req.user?.role !== "ADMIN" && req.user?.role !== "STUDENT") {
 
         return res.status(403).json({
             success: false,
