@@ -10,6 +10,8 @@ export interface CreateVideoDto {
 
     youtubeUrl: string;
 
+    // notesUrl?: string;
+
     description?: string;
 
     duration?: string;

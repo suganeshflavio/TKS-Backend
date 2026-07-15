@@ -3,10 +3,25 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { successResponse } from "../../utils/response";
 import { createVideoSchema, updateVideoSchema } from "./video.validation";
 import { createVideoService, getVideosService, updateVideoService, getVideoByIdService } from "./video.service";
+import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 
 export const createVideo = asyncHandler(async (req: Request, res: Response) => {
 
     const payload = createVideoSchema.parse(req.body);
+
+    if (req.file) {
+
+        const uploaded = await uploadToCloudinary(req.file);
+
+        payload.notesUrl = uploaded.secure_url;
+
+        // payload.notesFileName = req.file.originalname;
+
+        // payload.notesMimeType = req.file.mimetype;
+
+        // payload.notesFileSize = req.file.size;
+
+    }
 
     const video = await createVideoService(payload);
 
@@ -79,6 +94,15 @@ export const updateVideo = asyncHandler(
             req.body
 
         );
+
+          if (req.file) {
+        const uploaded = await uploadToCloudinary(req.file);
+
+        payload.notesUrl = uploaded.secure_url;
+        // payload.notesFileName = req.file.originalname;
+        // payload.notesMimeType = req.file.mimetype;
+        // payload.notesFileSize = req.file.size;
+    }
 
         const video = await updateVideoService(
 

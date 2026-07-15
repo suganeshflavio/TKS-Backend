@@ -90,6 +90,8 @@ model Video {
 
   youtubeUrl String
 
+  notesUrl String?
+
   description String?
 
   duration String?

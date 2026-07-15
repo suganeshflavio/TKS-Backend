@@ -12,13 +12,17 @@ export const createVideoSchema = z.object({
 
     youtubeUrl: z.string().url("Invalid YouTube URL"),
 
+    notesUrl: z.string().optional(),
+
     description: z.string(),
 
     duration: z.string().optional(),
 
-    order: z.number().optional(),
+    order: z.coerce.number().optional(),
+    // z.number().optional(),
 
-    isPreview: z.boolean().default(false).optional()
+    isPreview: z.coerce.boolean().optional()
+    // z.boolean().default(false).optional()
 
 });
 
