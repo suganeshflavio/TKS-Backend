@@ -106,7 +106,7 @@ if(user.role !== "STUDENT"){
 }
 
 if(!user.isActive){
-    throw new Error("Account Disabled");
+    throw new Error("Account Deactivated. Contact Admin.");
 }
 
 const passwordMatched = await comparePassword(
