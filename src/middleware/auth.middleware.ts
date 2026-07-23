@@ -41,6 +41,15 @@ export const authenticate = async (
 
         }
 
+        if (!user.isActive) {
+
+            return res.status(401).json({
+                success: false,
+                message: "Account Deactivated. Contact Admin."
+            });
+
+        }
+
         if (user.sessionToken !== decoded.sessionToken) {
 
             return res.status(401).json({

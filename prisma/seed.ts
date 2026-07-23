@@ -42,26 +42,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-
-
-
-//   model UserAccess {
-//   id String @id @default(cuid())
-
-//   userId String
-
-//   courseId String
-
-//   subject String
-
-//   chapter String
-
-//   createdAt DateTime @default(now())
-
-//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-//   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-//   @@unique([userId, courseId, subject, chapter])
-// }
