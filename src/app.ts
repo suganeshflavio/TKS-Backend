@@ -22,17 +22,18 @@ app.use("/api/courses", courseRoutes);
 
 app.use("/api/user-access", userAccessRoutes);
 
-app.use(errorMiddleware);
 app.use(
   "/api/users",
 
   userRoutes,
 );
-// app.use(errorHandler);
+
 app.get("/", (_, res) => {
   res.json({
     message: "Tks Academy Backend Running",
   });
 });
+
+app.use(errorMiddleware);
 
 export default app;

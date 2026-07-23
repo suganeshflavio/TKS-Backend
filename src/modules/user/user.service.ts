@@ -7,7 +7,8 @@ import {
 
     findStudentByEmail,
     getUserByIdRepository,
-    getUsersRepository
+    getUsersRepository,
+    updateUserRepository
 
 } from "./user.repository";
 
@@ -20,6 +21,24 @@ interface CreateStudentPayload {
     password: string;
 
     mobile?: string;
+
+    class?: string;
+
+}
+
+interface UpdateStudentPayload {
+
+    name?: string;
+
+    email?: string;
+
+    password?: string;
+
+    mobile?: string;
+
+    class?: string;
+
+    isActive?: boolean;
 
 }
 
@@ -71,13 +90,15 @@ export const createStudentService = async (
 export const getUsersService = async (
     page: number,
     limit: number,
-    search?: string
+    search?: string,
+    isActive?: boolean
 ) => {
 
     const result = await getUsersRepository(
         page,
         limit,
-        search
+        search,
+        isActive
     );
 
     return {
@@ -110,6 +131,45 @@ export const getUserByIdService = async (
     }
 
     return user;
+
+};
+
+export const updateUserService = async (
+    userId: string,
+    payload: UpdateStudentPayload
+) => {
+
+    const existingUser = await getUserByIdRepository(userId);
+
+    if (!existingUser) {
+
+        throw new AppError("User not found", 404);
+
+    }
+
+    if (payload.email) {
+
+        const duplicate = await findStudentByEmail(payload.email);
+
+        if (duplicate && duplicate.id !== userId) {
+
+            throw new AppError("Email already exists", 400);
+
+        }
+
+    }
+
+    const { password, ...rest } = payload;
+
+    const data: UpdateStudentPayload = { ...rest };
+
+    if (password) {
+
+        data.password = await hashPassword(password);
+
+    }
+
+    return updateUserRepository(userId, data);
 
 };
 

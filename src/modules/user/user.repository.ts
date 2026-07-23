@@ -29,6 +29,8 @@ export const createStudent = async (
 
         mobile?: string;
 
+        class?: string;
+
     }
 
 ) => {
@@ -52,7 +54,8 @@ export const createStudent = async (
 export const getUsersRepository = async (
     page: number,
     limit: number,
-    search?: string
+    search?: string,
+    isActive?: boolean
 ) => {
 
     const skip = (page - 1) * limit;
@@ -81,6 +84,10 @@ export const getUsersRepository = async (
         ];
     }
 
+    if (typeof isActive === "boolean") {
+        where.isActive = isActive;
+    }
+
     const [users, total] = await Promise.all([
 
         prisma.user.findMany({
@@ -103,6 +110,7 @@ export const getUsersRepository = async (
                 name: true,
                 email: true,
                 mobile: true,
+                class: true,
                 isActive: true,
                 isAccess: true,
                 role: true,
@@ -149,6 +157,8 @@ export const getUserByIdRepository = async (
 
             mobile: true,
 
+            class: true,
+
             email: true,
 
             role: true,
@@ -194,12 +204,14 @@ export const updateUserRepository = async (
 
             mobile: true,
 
+            class: true,
+
             email: true,
 
             role: true,
 
             isActive: true,
-            
+
             isAccess: true
 
         }

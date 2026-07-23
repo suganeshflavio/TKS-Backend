@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-import { createUserSchema } from "./user.validation";
+import { createUserSchema, updateUserSchema } from "./user.validation";
 
-import { createStudentService, getUserByIdService, getUsersService } from "./user.service";
+import { createStudentService, getUserByIdService, getUsersService, updateUserService } from "./user.service";
 
 import {
 
@@ -12,6 +12,7 @@ import {
 
 } from "../../utils/response";
 import { asyncHandler } from "../../utils/asyncHandler";
+import { resolveIsActive } from "../../utils/resolveIsActive";
 
 export const createStudent = async (
 
@@ -74,10 +75,13 @@ export const getUsers = asyncHandler(async (req: Request, res: Response) => {
 
     const search = req.query.search as string;
 
+    const isActive = resolveIsActive(req.query.isActive);
+
     const data = await getUsersService(
         page,
         limit,
-        search
+        search,
+        isActive
     );
 
     return successResponse(
@@ -108,4 +112,25 @@ export const getUserById = asyncHandler(
 
     }
 
+);
+
+export const updateUser = asyncHandler(
+    async (req: Request, res: Response) => {
+
+        const payload = updateUserSchema.parse(
+            req.body
+        );
+
+        const user = await updateUserService(
+            req.params.id as string,
+            payload
+        );
+
+        return successResponse(
+            res,
+            "User Updated Successfully",
+            user
+        );
+
+    }
 );

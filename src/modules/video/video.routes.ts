@@ -31,6 +31,8 @@ router.put(
 
   isAdmin,
 
+  upload.single("notesUrl"),
+
   updateVideo,
 );
 

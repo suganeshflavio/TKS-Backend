@@ -8,7 +8,8 @@ import {
 
     createStudent,
     getUserById,
-    getUsers
+    getUsers,
+    updateUser
 
 } from "./user.controller";
 
@@ -38,6 +39,13 @@ router.get(
     authenticate,
     isAdmin,
     getUserById
+);
+
+router.put(
+    "/:id",
+    authenticate,
+    isAdmin,
+    updateUser
 );
 
 export default router;

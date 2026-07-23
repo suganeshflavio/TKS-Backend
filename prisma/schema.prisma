@@ -26,6 +26,8 @@ model User {
 
   mobile String? @unique
 
+  class String?
+
   password String
 
   role Role @default(STUDENT)

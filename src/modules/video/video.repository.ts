@@ -82,6 +82,12 @@ export const getVideosRepository = async (
 
     }
 
+    if (typeof query.isActive === "boolean") {
+
+        where.isActive = query.isActive;
+
+    }
+
     const [videos, total] = await Promise.all([
 
         prisma.video.findMany({

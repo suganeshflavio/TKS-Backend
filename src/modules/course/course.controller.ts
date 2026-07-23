@@ -3,6 +3,7 @@ import { updateCourseSchema } from "./course.validation";
 import { asyncHandler } from "../../utils/asyncHandler";
 
 import { successResponse } from "../../utils/response";
+import { resolveIsActive } from "../../utils/resolveIsActive";
 
 import { createCourseSchema } from "./course.validation";
 
@@ -56,10 +57,7 @@ export const getCourses = asyncHandler(
 
             search: req.query.search as string,
 
-            isActive:
-                req.query.isActive === undefined
-                    ? undefined
-                    : req.query.isActive === "true"
+            isActive: resolveIsActive(req.query.isActive)
 
         });
 

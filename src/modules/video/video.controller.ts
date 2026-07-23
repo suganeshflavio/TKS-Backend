@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { successResponse } from "../../utils/response";
+import { resolveIsActive } from "../../utils/resolveIsActive";
 import { createVideoSchema, updateVideoSchema } from "./video.validation";
 import { createVideoService, getVideosService, updateVideoService, getVideoByIdService } from "./video.service";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
@@ -61,7 +62,9 @@ export const getVideos = asyncHandler(
 
             subject: req.query.subject as string,
 
-            chapter: req.query.chapter as string
+            chapter: req.query.chapter as string,
+
+            isActive: resolveIsActive(req.query.isActive)
 
         });
 
