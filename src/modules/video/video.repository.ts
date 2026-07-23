@@ -196,6 +196,21 @@ export const updateVideoRepository = async (
 
 };
 
+export const deactivateVideoAccessRepository = async (
+    videoId: string
+) => {
+
+    await prisma.userAccess.updateMany({
+        where: {
+            videoId
+        },
+        data: {
+            isActive: false
+        }
+    });
+
+};
+
 // export const getVideoByIdRepository = async (
 //     videoId: string
 // ) => {

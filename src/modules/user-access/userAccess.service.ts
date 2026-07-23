@@ -239,6 +239,7 @@ export const getUserAccessByUserIdService = async (
   const accesses = await prisma.userAccess.findMany({
     where: {
       userId,
+      isActive: true,
     },
     include: {
       course: {

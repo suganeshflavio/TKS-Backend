@@ -114,3 +114,31 @@ export const updateCourseRepository = async (
     });
 
 };
+
+export const deactivateCourseCascadeRepository = async (
+    courseId: string
+) => {
+
+    await prisma.$transaction([
+
+        prisma.video.updateMany({
+            where: {
+                courseId
+            },
+            data: {
+                isActive: false
+            }
+        }),
+
+        prisma.userAccess.updateMany({
+            where: {
+                courseId
+            },
+            data: {
+                isActive: false
+            }
+        })
+
+    ]);
+
+};

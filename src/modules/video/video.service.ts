@@ -2,6 +2,7 @@ import { AppError } from "../../utils/errors/AppError";
 import { CreateVideoDto, GetVideoQueryDto, UpdateVideoDto } from "./video.types";
 import {
     createVideoRepository,
+    deactivateVideoAccessRepository,
     getCourseRepository,
     getVideoByIdRepository,
     getVideosRepository,
@@ -113,13 +114,21 @@ export const updateVideoService = async (
 
     }
 
-    return updateVideoRepository(
+    const updatedVideo = await updateVideoRepository(
 
         videoId,
 
         payload
 
     );
+
+    if (payload.isActive === false) {
+
+        await deactivateVideoAccessRepository(videoId);
+
+    }
+
+    return updatedVideo;
 
 };
 

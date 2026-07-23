@@ -1,6 +1,6 @@
 import { AppError } from "../../utils/errors/AppError";
 import { GetCourseQueryDto } from "./course.types";
-import { getCoursesRepository, updateCourseRepository } from "./course.repository";
+import { deactivateCourseCascadeRepository, getCoursesRepository, updateCourseRepository } from "./course.repository";
 import { CreateCourseDto } from "./course.types";
 import { getCourseByIdRepository } from "./course.repository";
 import { UpdateCourseDto } from "./course.types";
@@ -145,12 +145,20 @@ export const updateCourseService = async (
 
     }
 
-    return updateCourseRepository(
+    const course = await updateCourseRepository(
 
         courseId,
 
         payload
 
     );
+
+    if (payload.isActive === false) {
+
+        await deactivateCourseCascadeRepository(courseId);
+
+    }
+
+    return course;
 
 };
