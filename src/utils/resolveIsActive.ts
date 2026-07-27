@@ -2,15 +2,10 @@ export const resolveIsActive = (
     value: unknown
 ): boolean | undefined => {
 
-    if (value === "all") {
+    // No filter passed -> return everything (active + inactive).
+    if (value === undefined || value === "all") {
 
         return undefined;
-
-    }
-
-    if (value === undefined) {
-
-        return true;
 
     }
 

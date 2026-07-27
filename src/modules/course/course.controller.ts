@@ -7,7 +7,14 @@ import { resolveIsActive } from "../../utils/resolveIsActive";
 
 import { createCourseSchema } from "./course.validation";
 
-import { createCourseService, getCourseByIdService, getCoursesService, updateCourseService } from "./course.service";
+import {
+    createCourseService,
+    getCourseByIdService,
+    getCoursesService,
+    updateCourseService,
+    deleteCourseService,
+    permanentDeleteCourseService
+} from "./course.service";
 
 export const createCourse = asyncHandler(
 
@@ -130,6 +137,48 @@ export const updateCourse = asyncHandler(
             "Course Updated Successfully",
 
             course
+
+        );
+
+    }
+
+);
+
+
+export const deleteCourse = asyncHandler(
+
+    async (req: Request, res: Response) => {
+
+        const course = await deleteCourseService(req.params.id as string);
+
+        return successResponse(
+
+            res,
+
+            "Course Deactivated Successfully",
+
+            course
+
+        );
+
+    }
+
+);
+
+
+export const permanentDeleteCourse = asyncHandler(
+
+    async (req: Request, res: Response) => {
+
+        const result = await permanentDeleteCourseService(req.params.id as string);
+
+        return successResponse(
+
+            res,
+
+            "Course Permanently Deleted",
+
+            result
 
         );
 

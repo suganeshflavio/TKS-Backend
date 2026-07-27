@@ -2,29 +2,37 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { successResponse } from "../../utils/response";
 import { resolveIsActive } from "../../utils/resolveIsActive";
-import { createVideoSchema, updateVideoSchema } from "./video.validation";
-import { createVideoService, getVideosService, updateVideoService, getVideoByIdService } from "./video.service";
+import { createVideoSchema, updateVideoSchema, videoUploadUrlSchema } from "./video.validation";
+import {
+    createVideoService,
+    getVideosService,
+    updateVideoService,
+    getVideoByIdService,
+    deleteVideoService,
+    permanentDeleteVideoService,
+    requestVideoUploadUrlService
+} from "./video.service";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 
 export const createVideo = asyncHandler(async (req: Request, res: Response) => {
 
     const payload = createVideoSchema.parse(req.body);
 
+    const data: any = { ...payload };
+
     if (req.file) {
 
-        const uploaded = await uploadToCloudinary(req.file);
+        const uploaded = await uploadToCloudinary(req.file, `notes/${payload.courseId}`);
 
-        payload.notesUrl = uploaded.secure_url;
+        data.notesFileId = uploaded.publicId;
 
-        // payload.notesFileName = req.file.originalname;
+        data.notesFileName = req.file.originalname;
 
-        // payload.notesMimeType = req.file.mimetype;
-
-        // payload.notesFileSize = req.file.size;
+        data.notesUrl = uploaded.url;
 
     }
 
-    const video = await createVideoService(payload);
+    const video = await createVideoService(data);
 
     return successResponse(
         res,
@@ -98,20 +106,25 @@ export const updateVideo = asyncHandler(
 
         );
 
-          if (req.file) {
-        const uploaded = await uploadToCloudinary(req.file);
+        const data: any = { ...payload };
 
-        payload.notesUrl = uploaded.secure_url;
-        // payload.notesFileName = req.file.originalname;
-        // payload.notesMimeType = req.file.mimetype;
-        // payload.notesFileSize = req.file.size;
-    }
+        if (req.file) {
+
+            const uploaded = await uploadToCloudinary(req.file, `notes/${payload.courseId ?? "misc"}`);
+
+            data.notesFileId = uploaded.publicId;
+
+            data.notesFileName = req.file.originalname;
+
+            data.notesUrl = uploaded.url;
+
+        }
 
         const video = await updateVideoService(
 
             req.params.id as string,
 
-            payload
+            data
 
         );
 
@@ -138,6 +151,44 @@ export const getVideoById = asyncHandler(async (req: Request, res: Response) => 
         res,
         "Video fetched successfully",
         video
+    );
+
+});
+
+export const deleteVideo = asyncHandler(async (req: Request, res: Response) => {
+
+    const video = await deleteVideoService(req.params.id as string);
+
+    return successResponse(
+        res,
+        "Video Deactivated Successfully",
+        video
+    );
+
+});
+
+export const permanentDeleteVideo = asyncHandler(async (req: Request, res: Response) => {
+
+    const result = await permanentDeleteVideoService(req.params.id as string);
+
+    return successResponse(
+        res,
+        "Video Permanently Deleted",
+        result
+    );
+
+});
+
+export const requestVideoUploadUrl = asyncHandler(async (req: Request, res: Response) => {
+
+    const payload = videoUploadUrlSchema.parse(req.body);
+
+    const data = await requestVideoUploadUrlService(payload);
+
+    return successResponse(
+        res,
+        "Upload URL generated successfully",
+        data
     );
 
 });

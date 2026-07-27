@@ -75,6 +75,8 @@ export const createCourseSchema = z
 
     export const updateCourseSchema = createCourseSchema.extend({
 
-    isActive: z.boolean().optional()
+    isActive: z.boolean().optional(),
+
+    subjects: z.array(z.string()).optional()
 
 });

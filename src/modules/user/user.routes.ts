@@ -9,7 +9,9 @@ import {
     createStudent,
     getUserById,
     getUsers,
-    updateUser
+    updateUser,
+    deleteUser,
+    permanentDeleteUser
 
 } from "./user.controller";
 
@@ -47,5 +49,9 @@ router.put(
     isAdmin,
     updateUser
 );
+
+router.delete("/:id", authenticate, isAdmin, deleteUser);
+
+router.delete("/:id/permanent", authenticate, isAdmin, permanentDeleteUser);
 
 export default router;

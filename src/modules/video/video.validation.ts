@@ -10,26 +10,39 @@ export const createVideoSchema = z.object({
 
     videoName: z.string().min(3, "Video name is required"),
 
-    youtubeUrl: z.string().url("Invalid YouTube URL"),
+    videoFileId: z.string().min(1, "videoFileId is required"),
 
-    notesUrl: z.string().optional(),
+    videoFileName: z.string().min(1, "videoFileName is required"),
+
+    videoSize: z.coerce.number().optional(),
 
     description: z.string(),
 
     duration: z.string().optional(),
 
     order: z.coerce.number().optional(),
-    // z.number().optional(),
 
     isPreview: z.coerce.boolean().optional()
-    // z.boolean().default(false).optional()
 
 });
 
-// export const updateVideoSchema = createVideoSchema;
-
 export const updateVideoSchema = createVideoSchema.extend({
 
+    videoFileId: z.string().optional(),
+
+    videoFileName: z.string().optional(),
+
     isActive: z.boolean().optional()
+
+});
+
+export const videoUploadUrlSchema = z.object({
+
+    fileName: z
+        .string()
+        .min(1, "fileName is required")
+        .refine((name) => /\.mp4$/i.test(name), "Only .mp4 files are supported"),
+
+    courseId: z.string().optional()
 
 });

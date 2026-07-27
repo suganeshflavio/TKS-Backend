@@ -4,10 +4,15 @@ import { deactivateCourseCascadeRepository, getCoursesRepository, updateCourseRe
 import { CreateCourseDto } from "./course.types";
 import { getCourseByIdRepository } from "./course.repository";
 import { UpdateCourseDto } from "./course.types";
+import { deleteB2File } from "../../utils/b2";
+import { deleteFromCloudinary } from "../../utils/uploadToCloudinary";
 
 import {
     createCourseRepository,
-    findCourseByName
+    findCourseByName,
+    setCourseActiveRepository,
+    getCourseVideoFilesRepository,
+    permanentDeleteCourseRepository
 } from "./course.repository";
 
 export const createCourseService = async (
@@ -121,27 +126,31 @@ export const updateCourseService = async (
 
     }
 
-    const duplicate = await findCourseByName(
+    if (payload.courseName) {
 
-        payload.courseName
+        const duplicate = await findCourseByName(
 
-    );
-
-    if (
-
-        duplicate &&
-
-        duplicate.id !== courseId
-
-    ) {
-
-        throw new AppError(
-
-            "Course name already exists",
-
-            409
+            payload.courseName
 
         );
+
+        if (
+
+            duplicate &&
+
+            duplicate.id !== courseId
+
+        ) {
+
+            throw new AppError(
+
+                "Course name already exists",
+
+                409
+
+            );
+
+        }
 
     }
 
@@ -160,5 +169,61 @@ export const updateCourseService = async (
     }
 
     return course;
+
+};
+
+export const deleteCourseService = async (
+    courseId: string
+) => {
+
+    const existingCourse = await getCourseByIdRepository(courseId);
+
+    if (!existingCourse) {
+
+        throw new AppError("Course not found", 404);
+
+    }
+
+    const course = await setCourseActiveRepository(courseId, false);
+
+    await deactivateCourseCascadeRepository(courseId);
+
+    return course;
+
+};
+
+export const permanentDeleteCourseService = async (
+    courseId: string
+) => {
+
+    const existingCourse = await getCourseByIdRepository(courseId);
+
+    if (!existingCourse) {
+
+        throw new AppError("Course not found", 404);
+
+    }
+
+    const videos = await getCourseVideoFilesRepository(courseId);
+
+    await Promise.all(
+
+        videos.flatMap((video) => [
+
+            video.videoFileId && video.videoFileName
+                ? deleteB2File(video.videoFileId, video.videoFileName)
+                : null,
+
+            video.notesFileId
+                ? deleteFromCloudinary(video.notesFileId)
+                : null
+
+        ].filter((entry): entry is Promise<void> => entry !== null))
+
+    );
+
+    await permanentDeleteCourseRepository(courseId);
+
+    return { id: courseId };
 
 };

@@ -142,3 +142,49 @@ export const deactivateCourseCascadeRepository = async (
     ]);
 
 };
+
+export const setCourseActiveRepository = async (
+    courseId: string,
+    isActive: boolean
+) => {
+
+    return prisma.course.update({
+        where: {
+            id: courseId
+        },
+        data: {
+            isActive
+        }
+    });
+
+};
+
+export const getCourseVideoFilesRepository = async (
+    courseId: string
+) => {
+
+    return prisma.video.findMany({
+        where: {
+            courseId
+        },
+        select: {
+            videoFileId: true,
+            videoFileName: true,
+            notesFileId: true,
+            notesFileName: true
+        }
+    });
+
+};
+
+export const permanentDeleteCourseRepository = async (
+    courseId: string
+) => {
+
+    return prisma.course.delete({
+        where: {
+            id: courseId
+        }
+    });
+
+};

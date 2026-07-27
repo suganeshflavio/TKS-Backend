@@ -196,6 +196,34 @@ export const updateVideoRepository = async (
 
 };
 
+export const setVideoActiveRepository = async (
+    videoId: string,
+    isActive: boolean
+) => {
+
+    return prisma.video.update({
+        where: {
+            id: videoId
+        },
+        data: {
+            isActive
+        }
+    });
+
+};
+
+export const permanentDeleteVideoRepository = async (
+    videoId: string
+) => {
+
+    return prisma.video.delete({
+        where: {
+            id: videoId
+        }
+    });
+
+};
+
 export const deactivateVideoAccessRepository = async (
     videoId: string
 ) => {
@@ -210,35 +238,3 @@ export const deactivateVideoAccessRepository = async (
     });
 
 };
-
-// export const getVideoByIdRepository = async (
-//     videoId: string
-// ) => {
-
-//     return prisma.video.findUnique({
-
-//         where: {
-
-//             id: videoId
-
-//         },
-
-//         include: {
-
-//             course: {
-
-//                 select: {
-
-//                     id: true,
-
-//                     courseName: true
-
-//                 }
-
-//             }
-
-//         }
-
-//     });
-
-// };

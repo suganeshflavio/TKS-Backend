@@ -8,11 +8,22 @@ import {
   getVideoById,
   getVideos,
   updateVideo,
+  deleteVideo,
+  permanentDeleteVideo,
+  requestVideoUploadUrl,
 } from "./video.controller";
 
 const router = Router();
 
-// router.post("/", authenticate, isAdmin, createVideo);
+router.post(
+  "/upload-url",
+
+  authenticate,
+
+  isAdmin,
+
+  requestVideoUploadUrl,
+);
 
 router.get(
   "/",
@@ -24,6 +35,16 @@ router.get(
   getVideos,
 );
 
+router.post(
+    "/",
+    authenticate,
+    isAdmin,
+    upload.single("notes"),
+    createVideo
+);
+
+router.get("/:id", authenticate, isAdmin, getVideoById);
+
 router.put(
   "/:id",
 
@@ -31,19 +52,13 @@ router.put(
 
   isAdmin,
 
-  upload.single("notesUrl"),
+  upload.single("notes"),
 
   updateVideo,
 );
 
-router.post(
-    "/",
-    authenticate,
-    isAdmin,
-    upload.single("notesUrl"),
-    createVideo
-);
+router.delete("/:id", authenticate, isAdmin, deleteVideo);
 
-router.get("/:id", authenticate, isAdmin, getVideoById);
+router.delete("/:id/permanent", authenticate, isAdmin, permanentDeleteVideo);
 
 export default router;

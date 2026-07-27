@@ -1,6 +1,13 @@
 import { Router } from "express";
 
-import { createCourse, getCourseById, getCourses, updateCourse } from "./course.controller";
+import {
+    createCourse,
+    getCourseById,
+    getCourses,
+    updateCourse,
+    deleteCourse,
+    permanentDeleteCourse
+} from "./course.controller";
 
 import { authenticate } from "../../middleware/auth.middleware";
 
@@ -50,5 +57,9 @@ router.put(
     updateCourse
 
 );
+
+router.delete("/:id", authenticate, isAdmin, deleteCourse);
+
+router.delete("/:id/permanent", authenticate, isAdmin, permanentDeleteCourse);
 
 export default router;

@@ -32,29 +32,8 @@ export interface GetCourseQueryDto {
     isActive?: boolean;
 }
 
-export interface UpdateCourseDto {
-
-    courseName: string;
-    // description?: string;
-    thumbnail?: string;
-
-    accessType?: "free" | "paid";
-
-    price?: number;
-
-    strikePrice?: number;
-
-    validityMonths?: number;
-
-    enableEmi?: boolean;
-
-    installments?: Prisma.InputJsonValue;
-
-    subjects: string[];
+export interface UpdateCourseDto extends Partial<CreateCourseDto> {
 
     isActive?: boolean;
 
 }
-
-export interface UpdateCourseDto
-  extends Partial<CreateCourseDto> {}

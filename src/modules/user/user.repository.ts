@@ -178,6 +178,61 @@ export const getUserByIdRepository = async (
 };
 
 
+export const setUserActiveRepository = async (
+    userId: string,
+    isActive: boolean
+) => {
+
+    return prisma.user.update({
+
+        where: {
+
+            id: userId
+
+        },
+
+        data: {
+
+            isActive
+
+        },
+
+        select: {
+
+            id: true,
+
+            name: true,
+
+            mobile: true,
+
+            class: true,
+
+            email: true,
+
+            role: true,
+
+            isActive: true,
+
+            isAccess: true
+
+        }
+
+    });
+
+};
+
+export const permanentDeleteUserRepository = async (
+    userId: string
+) => {
+
+    return prisma.user.delete({
+        where: {
+            id: userId
+        }
+    });
+
+};
+
 export const updateUserRepository = async (
 
     userId: string,

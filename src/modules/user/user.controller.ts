@@ -2,7 +2,14 @@ import { Request, Response } from "express";
 
 import { createUserSchema, updateUserSchema } from "./user.validation";
 
-import { createStudentService, getUserByIdService, getUsersService, updateUserService } from "./user.service";
+import {
+    createStudentService,
+    getUserByIdService,
+    getUsersService,
+    updateUserService,
+    deleteUserService,
+    permanentDeleteUserService
+} from "./user.service";
 
 import {
 
@@ -130,6 +137,34 @@ export const updateUser = asyncHandler(
             res,
             "User Updated Successfully",
             user
+        );
+
+    }
+);
+
+export const deleteUser = asyncHandler(
+    async (req: Request, res: Response) => {
+
+        const user = await deleteUserService(req.params.id as string);
+
+        return successResponse(
+            res,
+            "User Deactivated Successfully",
+            user
+        );
+
+    }
+);
+
+export const permanentDeleteUser = asyncHandler(
+    async (req: Request, res: Response) => {
+
+        const result = await permanentDeleteUserService(req.params.id as string);
+
+        return successResponse(
+            res,
+            "User Permanently Deleted",
+            result
         );
 
     }

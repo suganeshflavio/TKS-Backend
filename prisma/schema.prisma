@@ -90,9 +90,17 @@ model Video {
 
   videoName String
 
-  youtubeUrl String
+  videoFileId String?
+
+  videoFileName String?
+
+  videoSize Int?
 
   notesUrl String?
+
+  notesFileId String?
+
+  notesFileName String?
 
   description String?
 

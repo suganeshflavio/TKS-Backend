@@ -1,47 +1,51 @@
-// import cloudinary from "../config/cloudinary";
-// import streamifier from "streamifier";
-
-// export const uploadToCloudinary = (file: Express.Multer.File) => {
-
-//     return new Promise<any>((resolve, reject) => {
-
-//         const stream = cloudinary.uploader.upload_stream(
-
-//             {
-//                 folder: "tks/videos/notes",
-//                 resource_type: "raw"
-//             },
-
-//             (error, result) => {
-
-//                 if (error) return reject(error);
-
-//                 resolve(result);
-
-//             }
-
-//         );
-
-//         streamifier.createReadStream(file.buffer).pipe(stream);
-
-//     });
-
-// };
-
-
 import cloudinary from "../config/cloudinary";
-import fs from "fs";
+import { UploadApiResponse } from "cloudinary";
 
-export const uploadToCloudinary = async (
-  file: Express.Multer.File
-) => {
-  const result = await cloudinary.uploader.upload(file.path, {
-    folder: "tks/videos/notes",
-    resource_type: "raw",
+interface CloudinaryUploadResult {
+  publicId: string;
+  url: string;
+}
+
+export const uploadToCloudinary = (
+  file: Express.Multer.File,
+  folder: string
+): Promise<CloudinaryUploadResult> => {
+
+  return new Promise((resolve, reject) => {
+
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        resource_type: "raw",
+        use_filename: true,
+        unique_filename: true,
+      },
+      (error, result?: UploadApiResponse) => {
+
+        if (error || !result) {
+          return reject(error ?? new Error("Cloudinary upload failed"));
+        }
+
+        resolve({
+          publicId: result.public_id,
+          url: result.secure_url,
+        });
+
+      }
+    );
+
+    stream.end(file.buffer);
+
   });
 
-  // Delete temporary file
-  fs.unlinkSync(file.path);
+};
 
-  return result;
+export const deleteFromCloudinary = async (publicId: string): Promise<void> => {
+
+  await cloudinary.uploader
+    .destroy(publicId, { resource_type: "raw" })
+    .catch((error) => {
+      console.error(`Cloudinary delete failed for ${publicId}:`, error);
+    });
+
 };

@@ -8,7 +8,9 @@ import {
     findStudentByEmail,
     getUserByIdRepository,
     getUsersRepository,
-    updateUserRepository
+    updateUserRepository,
+    setUserActiveRepository,
+    permanentDeleteUserRepository
 
 } from "./user.repository";
 
@@ -170,6 +172,40 @@ export const updateUserService = async (
     }
 
     return updateUserRepository(userId, data);
+
+};
+
+export const deleteUserService = async (
+    userId: string
+) => {
+
+    const existingUser = await getUserByIdRepository(userId);
+
+    if (!existingUser) {
+
+        throw new AppError("User not found", 404);
+
+    }
+
+    return setUserActiveRepository(userId, false);
+
+};
+
+export const permanentDeleteUserService = async (
+    userId: string
+) => {
+
+    const existingUser = await getUserByIdRepository(userId);
+
+    if (!existingUser) {
+
+        throw new AppError("User not found", 404);
+
+    }
+
+    await permanentDeleteUserRepository(userId);
+
+    return { id: userId };
 
 };
 

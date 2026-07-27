@@ -8,9 +8,15 @@ export interface CreateVideoDto {
 
     videoName: string;
 
-    youtubeUrl: string;
+    videoFileId: string;
 
-    // notesUrl?: string;
+    videoFileName: string;
+
+    videoSize?: number;
+
+    notesFileId?: string;
+
+    notesFileName?: string;
 
     description?: string;
 
@@ -42,4 +48,4 @@ export interface GetVideoQueryDto {
 
 }
 
-export interface UpdateVideoDto extends CreateVideoDto {}
+export interface UpdateVideoDto extends Partial<CreateVideoDto> {}
