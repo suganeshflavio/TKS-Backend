@@ -1,5 +1,6 @@
 import cloudinary from "../config/cloudinary";
 import { UploadApiResponse } from "cloudinary";
+import { sanitizeFileName } from "./b2";
 
 interface CloudinaryUploadResult {
   publicId: string;
@@ -19,6 +20,7 @@ export const uploadToCloudinary = (
         resource_type: "raw",
         use_filename: true,
         unique_filename: true,
+        filename_override: sanitizeFileName(file.originalname),
       },
       (error, result?: UploadApiResponse) => {
 
