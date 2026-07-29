@@ -6,6 +6,8 @@ import { errorMiddleware } from "./middleware/error.middleware";
 import courseRoutes from "./modules/course/course.routes";
 import videoRoutes from "./modules/video/video.routes";
 import userAccessRoutes from "./modules/user-access/userAccess.route";
+import commentRoutes from "./modules/comment/comment.routes";
+import testimonialRoutes from "./modules/testimonial/testimonial.routes";
 
 const app = express();
 app.use(express.json());
@@ -21,6 +23,10 @@ app.use("/api/videos", videoRoutes);
 app.use("/api/courses", courseRoutes);
 
 app.use("/api/user-access", userAccessRoutes);
+
+app.use("/api/comments", commentRoutes);
+
+app.use("/api/testimonials", testimonialRoutes);
 
 app.use(
   "/api/users",
