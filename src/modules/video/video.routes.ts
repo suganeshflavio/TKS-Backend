@@ -39,7 +39,7 @@ router.post(
     "/",
     authenticate,
     isAdmin,
-    upload.single("notes"),
+    upload.single("notesUrl"),
     createVideo
 );
 
@@ -52,7 +52,7 @@ router.put(
 
   isAdmin,
 
-  upload.single("notes"),
+  upload.single("notesUrl"),
 
   updateVideo,
 );

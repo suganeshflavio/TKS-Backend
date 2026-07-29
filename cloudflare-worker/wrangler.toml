@@ -2,12 +2,8 @@ name = "tksacademy-b2-cdn"
 main = "src/index.ts"
 compatibility_date = "2026-07-27"
 
-# Set to the `downloadUrl` host returned by B2's b2_authorize_account for
-# this account (visible in the B2 console under bucket details, or by
-# calling authorizeB2() in the backend and logging session.downloadUrl).
-# Example: "f005.backblazeb2.com"
 [vars]
-B2_DOWNLOAD_HOST = "REPLACE_WITH_YOUR_B2_DOWNLOAD_HOST"
+B2_DOWNLOAD_HOST = "f005.backblazeb2.com"
 
 # After first deploy, attach a custom domain/route in the Cloudflare
 # dashboard (Workers & Pages > tksacademy-b2-cdn > Settings > Domains &
