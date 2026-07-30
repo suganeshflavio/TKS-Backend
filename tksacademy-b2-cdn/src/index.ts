@@ -49,22 +49,34 @@ export default {
 
     const url = new URL(request.url);
 
-    // Expected URL:
-    // /videos/course/file.mp4
-    // /notes/course/file.pptx
+    let filePath = url.pathname;
 
-    const filePath = url.pathname.replace(/^\/+/, "");
+    // Incoming URL:
+    // /file/tksacademy-media/videos/demo.mp4
 
-    if (!filePath) {
-      return new Response("Missing file path", {
+    const prefix = `/file/${env.B2_BUCKET_NAME}/`;
+
+    if (!filePath.startsWith(prefix)) {
+      return new Response("Invalid path", {
         status: 400,
       });
     }
+
+    filePath = filePath.substring(prefix.length);
+
+    // Result:
+    // videos/demo.mp4
 
     const b2Url =
       `${env.B2_DOWNLOAD_URL}/file/${env.B2_BUCKET_NAME}/${filePath}`;
 
     const headers = new Headers();
+
+    const auth = url.searchParams.get("Authorization");
+
+    if (auth) {
+      headers.set("Authorization", auth);
+    }
 
     const range = request.headers.get("Range");
 
@@ -77,31 +89,15 @@ export default {
       headers,
     });
 
-    const proxyHeaders = new Headers(response.headers);
+    const responseHeaders = new Headers(response.headers);
 
-    proxyHeaders.set(
-      "Access-Control-Allow-Origin",
-      "*"
-    );
-
-    proxyHeaders.set(
-      "Access-Control-Allow-Methods",
-      "GET,HEAD,OPTIONS"
-    );
-
-    proxyHeaders.set(
-      "Access-Control-Allow-Headers",
-      "*"
-    );
-
-    proxyHeaders.set(
-      "Cache-Control",
-      "public,max-age=31536000"
-    );
+    responseHeaders.set("Access-Control-Allow-Origin", "*");
+    responseHeaders.set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS");
+    responseHeaders.set("Access-Control-Allow-Headers", "*");
 
     return new Response(response.body, {
       status: response.status,
-      headers: proxyHeaders,
+      headers: responseHeaders,
     });
   },
 };
