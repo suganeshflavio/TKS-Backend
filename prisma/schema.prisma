@@ -17,6 +17,18 @@ enum Role {
   STUDENT
 }
 
+enum OptionChoice {
+  A
+  B
+  C
+  D
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  COMPLETED
+}
+
 model User {
   id String @id @default(cuid())
 
@@ -49,6 +61,8 @@ model User {
   comments Comment[]
 
   testimonials Testimonial[]
+
+  studentAttempts StudentAttempt[]
 }
 
 model Course {
@@ -125,6 +139,10 @@ model Video {
   userAccesses UserAccess[]
 
   comments Comment[]
+
+  tests TestQuestion[]
+
+  attempts StudentAttempt[]
 }
 
 model Comment {
@@ -198,4 +216,123 @@ model UserAccess {
   @@index([userId])
   @@index([courseId])
   @@index([videoId])
+}
+
+model TestQuestion {
+  id String @id @default(cuid())
+
+  videoId String
+
+  testName String
+
+  marksPerQuestion Int
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  questions TestQuestionItem[]
+
+  attempts StudentAttempt[]
+
+  @@index([videoId])
+}
+
+model TestQuestionItem {
+  id String @id @default(cuid())
+
+  testId String
+
+  question String
+
+  optionA String
+
+  optionB String
+
+  optionC String
+
+  optionD String
+
+  correctOption OptionChoice
+
+  explanation String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  test TestQuestion @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  attemptAnswers StudentAttemptAnswer[]
+
+  @@index([testId])
+}
+
+model StudentAttempt {
+  id String @id @default(cuid())
+
+  studentId String
+
+  videoId String
+
+  testId String
+
+  status AttemptStatus @default(COMPLETED)
+
+  totalQuestions Int
+
+  correctAnswers Int
+
+  wrongAnswers Int
+
+  marksPerQuestion Int
+
+  totalMarks Int
+
+  obtainedMarks Int
+
+  startedAt DateTime
+
+  submittedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  student User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  test TestQuestion @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  answers StudentAttemptAnswer[]
+
+  @@index([studentId])
+  @@index([videoId])
+  @@index([testId])
+  @@index([status])
+}
+
+model StudentAttemptAnswer {
+  id String @id @default(cuid())
+
+  attemptId String
+
+  questionId String
+
+  selectedOption OptionChoice
+
+  isCorrect Boolean
+
+  createdAt DateTime @default(now())
+
+  attempt StudentAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  question TestQuestionItem @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([attemptId])
+  @@index([questionId])
+  @@unique([attemptId, questionId])
 }

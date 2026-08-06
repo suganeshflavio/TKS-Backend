@@ -1,8 +1,6 @@
 import prisma from "../../config/prisma";
-import { CreateVideoDto } from "./video.types";
 import { Prisma } from "@prisma/client";
-import { GetVideoQueryDto } from "./video.types";
-import { UpdateVideoDto } from "./video.types";
+import { CreateVideoDto, GetVideoQueryDto, UpdateVideoDto } from "./video.types";
 
 export const createVideoRepository = async (
     payload: CreateVideoDto

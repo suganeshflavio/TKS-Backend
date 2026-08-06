@@ -8,6 +8,8 @@ import videoRoutes from "./modules/video/video.routes";
 import userAccessRoutes from "./modules/user-access/userAccess.route";
 import commentRoutes from "./modules/comment/comment.routes";
 import testimonialRoutes from "./modules/testimonial/testimonial.routes";
+import testRoutes from "./modules/test/test.routes";
+import studentAttemptRoutes from "./modules/student-attempt/studentAttempt.routes";
 
 const app = express();
 app.use(express.json());
@@ -27,6 +29,10 @@ app.use("/api/user-access", userAccessRoutes);
 app.use("/api/comments", commentRoutes);
 
 app.use("/api/testimonials", testimonialRoutes);
+
+app.use("/api/tests", testRoutes);
+
+app.use("/api/student-attempts", studentAttemptRoutes);
 
 app.use(
   "/api/users",
