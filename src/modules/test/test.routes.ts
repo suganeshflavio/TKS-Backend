@@ -6,6 +6,8 @@ import {
   createTest,
   deleteQuestion,
   deleteTest,
+  getAttemptByIdForTestAdmin,
+  getAttemptsByTestIdAdmin,
   getStudentTestById,
   getStudentTestsByVideoId,
   getTestById,
@@ -29,6 +31,8 @@ router.post("/:id/questions", authenticate, requireAdmin, addQuestion);
 router.put("/:id/questions/:questionId", authenticate, requireAdmin, updateQuestion);
 router.delete("/:id/questions/:questionId", authenticate, requireAdmin, deleteQuestion);
 
+router.get("/:id/attempts", authenticate, requireAdmin, getAttemptsByTestIdAdmin);
+router.get("/:id/attempts/:attemptId", authenticate, requireAdmin, getAttemptByIdForTestAdmin);
 router.post("/:id/attempts", authenticate, submitAttempt);
 
 export default router;

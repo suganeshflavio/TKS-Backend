@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { successResponse } from "../../utils/response";
+import { AppError } from "../../utils/errors/AppError";
 import {
   addQuestionSchema,
   createTestSchema,
@@ -115,6 +116,29 @@ export const submitAttempt = asyncHandler(async (req: Request, res: Response) =>
   );
 
   return successResponse(res, "Student attempt submitted successfully", data, 201);
+});
+
+export const getAttemptsByTestIdAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const data = await getStudentAttemptsAdminService({
+    page: req.query.page ? Number(req.query.page) : 1,
+    limit: req.query.limit ? Number(req.query.limit) : 10,
+    testId: req.params.id as string,
+    videoId: req.query.videoId as string,
+    studentId: req.query.studentId as string,
+    status: req.query.status as "IN_PROGRESS" | "COMPLETED" | undefined,
+  });
+
+  return successResponse(res, "Student attempts fetched successfully", data);
+});
+
+export const getAttemptByIdForTestAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const data = await getStudentAttemptByIdAdminService(req.params.attemptId as string);
+
+  if (data.testId !== (req.params.id as string)) {
+    throw new AppError("Student attempt not found for this test", 404);
+  }
+
+  return successResponse(res, "Student attempt fetched successfully", data);
 });
 
 export const getStudentAttemptsAdmin = asyncHandler(async (req: Request, res: Response) => {
