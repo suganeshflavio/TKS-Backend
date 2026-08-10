@@ -21,6 +21,7 @@ import {
   getStudentAttemptsRepository,
   getTestByIdRepository,
   getTestWithQuestionsRepository,
+  getTestsWithQuestionsByVideoIdRepository,
   getTestsRepository,
   getVideoByIdRepository,
   updateQuestionRepository,
@@ -59,6 +60,24 @@ const formatAttempt = (attempt: any): AttemptDetails => ({
   })),
 });
 
+const formatStudentTest = (test: any) => ({
+  id: test.id,
+  videoId: test.videoId,
+  testName: test.testName,
+  marksPerQuestion: test.marksPerQuestion,
+  createdAt: test.createdAt,
+  updatedAt: test.updatedAt,
+  video: test.video,
+  questions: test.questions.map((question: any) => ({
+    id: question.id,
+    question: question.question,
+    optionA: question.optionA,
+    optionB: question.optionB,
+    optionC: question.optionC,
+    optionD: question.optionD,
+  })),
+});
+
 export const createTestService = async (payload: CreateTestDto) => {
   const video = await getVideoByIdRepository(payload.videoId);
 
@@ -92,6 +111,22 @@ export const getTestByIdService = async (testId: string) => {
   }
 
   return test;
+};
+
+export const getStudentTestByIdService = async (testId: string) => {
+  const test = await getTestByIdRepository(testId);
+
+  if (!test) {
+    throw new AppError("Test not found", 404);
+  }
+
+  return formatStudentTest(test);
+};
+
+export const getStudentTestsByVideoIdService = async (videoId: string) => {
+  const tests = await getTestsWithQuestionsByVideoIdRepository(videoId);
+
+  return tests.map(formatStudentTest);
 };
 
 export const updateTestService = async (testId: string, payload: UpdateTestDto) => {

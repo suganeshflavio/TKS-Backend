@@ -142,6 +142,36 @@ export const getTestByIdRepository = async (testId: string) => {
   });
 };
 
+export const getTestsWithQuestionsByVideoIdRepository = async (videoId: string) => {
+  return prismaDb.testQuestion.findMany({
+    where: { videoId },
+    include: {
+      video: {
+        select: {
+          id: true,
+          videoName: true,
+          subject: true,
+          chapter: true,
+          course: {
+            select: {
+              id: true,
+              courseName: true,
+            },
+          },
+        },
+      },
+      questions: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
+
 export const updateTestRepository = async (testId: string, payload: UpdateTestDto) => {
   return prismaDb.testQuestion.update({
     where: { id: testId },

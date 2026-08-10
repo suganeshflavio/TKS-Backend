@@ -14,6 +14,8 @@ import {
   deleteQuestionService,
   deleteTestService,
   getMyAttemptsService,
+  getStudentTestByIdService,
+  getStudentTestsByVideoIdService,
   getStudentAttemptByIdAdminService,
   getStudentAttemptsAdminService,
   getTestByIdService,
@@ -46,6 +48,18 @@ export const getTestById = asyncHandler(async (req: Request, res: Response) => {
   const test = await getTestByIdService(req.params.id as string);
 
   return successResponse(res, "Test fetched successfully", test);
+});
+
+export const getStudentTestsByVideoId = asyncHandler(async (req: Request, res: Response) => {
+  const tests = await getStudentTestsByVideoIdService(req.params.videoId as string);
+
+  return successResponse(res, "Student tests fetched successfully", tests);
+});
+
+export const getStudentTestById = asyncHandler(async (req: Request, res: Response) => {
+  const test = await getStudentTestByIdService(req.params.id as string);
+
+  return successResponse(res, "Student test fetched successfully", test);
 });
 
 export const updateTest = asyncHandler(async (req: Request, res: Response) => {
