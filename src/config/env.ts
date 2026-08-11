@@ -11,11 +11,11 @@ dotenv.config();
 const requiredEnv = [
   "DATABASE_URL",
   "JWT_SECRET",
-  "B2_APPLICATION_KEY_ID",
+  // "B2_APPLICATION_KEY_ID",
   "B2_APPLICATION_KEY",
   "B2_BUCKET_ID",
   "B2_BUCKET_NAME",
-  "B2_DOWNLOAD_URL",
+  // "B2_DOWNLOAD_URL",
 ];
 
 for (const key of requiredEnv) {
