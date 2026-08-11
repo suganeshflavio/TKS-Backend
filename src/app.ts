@@ -46,6 +46,13 @@ app.get("/", (_, res) => {
   });
 });
 
+app.get("/api/health", (_req, res) => {
+    res.json({
+        success: true,
+        message: "API is healthy",
+    });
+});
+
 app.use(errorMiddleware);
 
 export default app;
