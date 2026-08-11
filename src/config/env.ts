@@ -8,21 +8,21 @@
 import dotenv from "dotenv";
 
 dotenv.config();
-const requiredEnv = [
-  "DATABASE_URL",
-  "JWT_SECRET",
-  // "B2_APPLICATION_KEY_ID",
-  "B2_APPLICATION_KEY",
-  "B2_BUCKET_ID",
-  "B2_BUCKET_NAME",
-  // "B2_DOWNLOAD_URL",
-];
+// const requiredEnv = [
+//   "DATABASE_URL",
+//   "JWT_SECRET",
+//   // "B2_APPLICATION_KEY_ID",
+//   "B2_APPLICATION_KEY",
+//   "B2_BUCKET_ID",
+//   "B2_BUCKET_NAME",
+//   // "B2_DOWNLOAD_URL",
+// ];
 
-for (const key of requiredEnv) {
-  if (!process.env[key]) {
-    console.error(`Missing environment variable: ${key}`);
-  }
-}
+// for (const key of requiredEnv) {
+//   if (!process.env[key]) {
+//     console.error(`Missing environment variable: ${key}`);
+//   }
+// }
 export const env = {
   PORT: Number(process.env.PORT) || 5000,
 
