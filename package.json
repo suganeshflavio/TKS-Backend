@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "seed": "ts-node prisma/seed.ts",
     "migrate": "prisma migrate deploy",
-    "configure-b2-cors": "ts-node scripts/configure-b2-cors.ts"
+    "configure-b2-cors": "ts-node scripts/configure-b2-cors.ts",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
