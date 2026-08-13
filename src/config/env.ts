@@ -23,6 +23,7 @@ dotenv.config();
 //     console.error(`Missing environment variable: ${key}`);
 //   }
 // }
+
 export const env = {
   PORT: Number(process.env.PORT) || 5000,
 
