@@ -7,8 +7,8 @@ import {
     updateSession
 } from "./auth.repository";
 
-import { v4 as uuid } from "uuid";
-
+// import { v4 as uuid } from "uuid";
+import { randomUUID } from "crypto";
 interface LoginPayload {
 
     email: string;
@@ -51,7 +51,7 @@ export const adminLogin = async (
 
     }
 
-    const sessionToken = uuid();
+    const sessionToken = randomUUID();
 
     await updateSession(
 
@@ -129,7 +129,7 @@ if (
 
 }
 
-const sessionToken = uuid();
+const sessionToken = randomUUID();
 
 await updateSession(
     user.id,
