@@ -8,6 +8,20 @@ export const findUserByEmail = async (email: string) => {
   });
 };
 
+export const updatePasswordAndClearSession = async (
+  userId: string,
+  password: string
+) => {
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      password,
+      sessionToken: null,
+      deviceId: null
+    }
+  });
+};
+
 export const updateSession = async (
   userId: string,
   sessionToken: string,

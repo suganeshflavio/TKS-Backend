@@ -1,8 +1,21 @@
 import { Request, Response } from "express";
 
-import { adminLoginSchema, studentLoginSchema } from "./auth.validation";
+import {
+    adminLoginSchema,
+    forgotPasswordEmailSchema,
+    resetPasswordSchema,
+    studentLoginSchema,
+    studentRegisterSchema
+} from "./auth.validation";
 
-import { adminLogin, logout, studentLogin } from "./auth.service";
+import {
+    adminLogin,
+    checkStudentEmail,
+    logout,
+    registerStudent,
+    resetStudentPassword,
+    studentLogin
+} from "./auth.service";
 
 import {
     errorResponse,
@@ -95,4 +108,46 @@ export const logoutController = async (
         "Logout Successful"
     );
 
+};
+
+export const studentRegisterController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const payload = studentRegisterSchema.parse(req.body);
+        const data = await registerStudent(payload);
+
+        return successResponse(res, "Registration Successful", data, 201);
+    } catch (error: any) {
+        return errorResponse(res, error.message, error.statusCode || 400);
+    }
+};
+
+export const checkStudentEmailController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const { email } = forgotPasswordEmailSchema.parse(req.body);
+        const data = await checkStudentEmail(email);
+
+        return successResponse(res, "Email exists", data);
+    } catch (error: any) {
+        return errorResponse(res, error.message, error.statusCode || 400);
+    }
+};
+
+export const resetStudentPasswordController = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const payload = resetPasswordSchema.parse(req.body);
+        await resetStudentPassword(payload.email, payload.password);
+
+        return successResponse(res, "Password changed successfully");
+    } catch (error: any) {
+        return errorResponse(res, error.message, error.statusCode || 400);
+    }
 };

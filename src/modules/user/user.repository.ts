@@ -31,6 +31,8 @@ export const createStudent = async (
 
         class?: string;
 
+        deviceId?: string;
+
     }
 
 ) => {
