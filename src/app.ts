@@ -10,6 +10,11 @@ import commentRoutes from "./modules/comment/comment.routes";
 import testimonialRoutes from "./modules/testimonial/testimonial.routes";
 import testRoutes from "./modules/test/test.routes";
 import studentAttemptRoutes from "./modules/student-attempt/studentAttempt.routes";
+import notesRoutes from "./modules/notes/notes.routes";
+import subjectRoutes from "./modules/subject/subject.routes";
+import classRoutes from "./modules/class/class.routes";
+import chapterRoutes from "./modules/chapter/chapter.routes";
+import topicRoutes from "./modules/topic/topic.routes";
 
 const app = express();
 app.use(express.json());
@@ -33,6 +38,16 @@ app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/tests", testRoutes);
 
 app.use("/api/student-attempts", studentAttemptRoutes);
+
+app.use("/api/notes", notesRoutes);
+
+app.use("/api/subjects", subjectRoutes);
+
+app.use("/api/classes", classRoutes);
+
+app.use("/api/chapters", chapterRoutes);
+
+app.use("/api/topics", topicRoutes);
 
 app.use(
   "/api/users",
