@@ -411,7 +411,7 @@ model UserAccess {
 
   createdAt DateTime @default(now())
 
-  @@unique([userId, videoId])
+  @@unique([userId, courseId, videoId])
   @@index([userId])
   @@index([courseId])
   @@index([videoId])
@@ -434,7 +434,7 @@ model UserNotesAccess {
 
   createdAt DateTime @default(now())
 
-  @@unique([userId, notesId])
+  @@unique([userId, courseId, notesId])
   @@index([userId])
   @@index([courseId])
   @@index([notesId])
@@ -457,7 +457,7 @@ model UserMcqTestAccess {
 
   createdAt DateTime @default(now())
 
-  @@unique([userId, testId])
+  @@unique([userId, courseId, testId])
   @@index([userId])
   @@index([courseId])
   @@index([testId])
