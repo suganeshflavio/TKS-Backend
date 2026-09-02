@@ -15,6 +15,7 @@ import subjectRoutes from "./modules/subject/subject.routes";
 import classRoutes from "./modules/class/class.routes";
 import chapterRoutes from "./modules/chapter/chapter.routes";
 import topicRoutes from "./modules/topic/topic.routes";
+import uploadRoutes from "./modules/upload/upload.routes";
 
 const app = express();
 app.use(express.json());
@@ -48,6 +49,8 @@ app.use("/api/classes", classRoutes);
 app.use("/api/chapters", chapterRoutes);
 
 app.use("/api/topics", topicRoutes);
+
+app.use("/api/uploads", uploadRoutes);
 
 app.use(
   "/api/users",

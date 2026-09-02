@@ -48,6 +48,10 @@ model User {
 
   accesses UserAccess[]
 
+  notesAccesses UserNotesAccess[]
+
+  mcqTestAccesses UserMcqTestAccess[]
+
   sessionToken String?
 
   isActive Boolean @default(true)
@@ -213,6 +217,8 @@ model Notes {
   topics Topic[]
 
   courses CourseNotes[]
+
+  userAccesses UserNotesAccess[]
 }
 
 model Course {
@@ -229,6 +235,10 @@ model Course {
   strikePrice Int?
 
   userAccesses UserAccess[]
+
+  userNotesAccesses UserNotesAccess[]
+
+  userMcqTestAccesses UserMcqTestAccess[]
 
   validityMonths Int?
 
@@ -407,6 +417,52 @@ model UserAccess {
   @@index([videoId])
 }
 
+model UserNotesAccess {
+  id String @id @default(cuid())
+
+  userId   String
+  courseId String
+  notesId  String
+
+  isActive Boolean @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  notes Notes @relation(fields: [notesId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, notesId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([notesId])
+}
+
+model UserMcqTestAccess {
+  id String @id @default(cuid())
+
+  userId   String
+  courseId String
+  testId   String
+
+  isActive Boolean @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  test TestQuestion @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, testId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([testId])
+}
+
 model TestQuestion {
   id String @id @default(cuid())
 
@@ -425,6 +481,8 @@ model TestQuestion {
   questions TestQuestionItem[]
 
   attempts StudentAttempt[]
+
+  userAccesses UserMcqTestAccess[]
 }
 
 model TestQuestionItem {

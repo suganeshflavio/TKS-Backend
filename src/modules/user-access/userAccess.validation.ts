@@ -7,9 +7,14 @@ export const assignUserAccessSchema = z.object({
     z.object({
       courseId: z.string().min(1, "Course is required"),
 
-      videoIds: z
-        .array(z.string().min(1))
-        .min(1, "Select at least one video"),
-    })
+      videoIds: z.array(z.string().min(1)).default([]),
+
+      notesIds: z.array(z.string().min(1)).default([]),
+
+      testIds: z.array(z.string().min(1)).default([]),
+    }).refine(
+      (course) => course.videoIds.length + course.notesIds.length + course.testIds.length > 0,
+      { message: "Select at least one video, notes, or test" }
+    )
   ).min(1, "At least one course is required"),
 });

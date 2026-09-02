@@ -3,6 +3,8 @@ export interface AssignUserAccessDto {
 
   courses: {
     courseId: string;
-    videoIds: string[];
+    videoIds?: string[];
+    notesIds?: string[];
+    testIds?: string[];
   }[];
 }
