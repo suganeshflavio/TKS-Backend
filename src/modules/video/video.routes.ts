@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { upload } from "../../middleware/upload.middleware";
 import { authenticate } from "../../middleware/auth.middleware";
 import { isAdmin } from "../../middleware/admin.middleware";
 
@@ -39,7 +38,6 @@ router.post(
     "/",
     authenticate,
     isAdmin,
-    upload.single("notesUrl"),
     createVideo
 );
 
@@ -51,8 +49,6 @@ router.put(
   authenticate,
 
   isAdmin,
-
-  upload.single("notesUrl"),
 
   updateVideo,
 );

@@ -5,7 +5,13 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { successResponse } from "../../utils/response";
 import { resolveIsActive } from "../../utils/resolveIsActive";
 
-import { createCourseSchema } from "./course.validation";
+import {
+    createCourseSchema,
+    linkMcqTestSchema,
+    linkNotesSchema,
+    linkSubjectSchema,
+    linkVideoSchema
+} from "./course.validation";
 
 import {
     createCourseService,
@@ -13,7 +19,15 @@ import {
     getCoursesService,
     updateCourseService,
     deleteCourseService,
-    permanentDeleteCourseService
+    permanentDeleteCourseService,
+    linkCourseSubjectService,
+    unlinkCourseSubjectService,
+    linkCourseVideoService,
+    unlinkCourseVideoService,
+    linkCourseNotesService,
+    unlinkCourseNotesService,
+    linkCourseMcqTestService,
+    unlinkCourseMcqTestService
 } from "./course.service";
 
 export const createCourse = asyncHandler(
@@ -185,3 +199,103 @@ export const permanentDeleteCourse = asyncHandler(
     }
 
 );
+
+export const linkCourseSubject = asyncHandler(async (req: Request, res: Response) => {
+
+    const payload = linkSubjectSchema.parse(req.body);
+
+    const result = await linkCourseSubjectService(
+        req.params.id as string,
+        payload.subjectId,
+        payload.order
+    );
+
+    return successResponse(res, "Subject linked to course successfully", result, 201);
+
+});
+
+export const unlinkCourseSubject = asyncHandler(async (req: Request, res: Response) => {
+
+    const result = await unlinkCourseSubjectService(
+        req.params.id as string,
+        req.params.subjectId as string
+    );
+
+    return successResponse(res, "Subject unlinked from course successfully", result);
+
+});
+
+export const linkCourseVideo = asyncHandler(async (req: Request, res: Response) => {
+
+    const payload = linkVideoSchema.parse(req.body);
+
+    const result = await linkCourseVideoService(
+        req.params.id as string,
+        payload.videoId,
+        payload.order
+    );
+
+    return successResponse(res, "Video linked to course successfully", result, 201);
+
+});
+
+export const unlinkCourseVideo = asyncHandler(async (req: Request, res: Response) => {
+
+    const result = await unlinkCourseVideoService(
+        req.params.id as string,
+        req.params.videoId as string
+    );
+
+    return successResponse(res, "Video unlinked from course successfully", result);
+
+});
+
+export const linkCourseNotes = asyncHandler(async (req: Request, res: Response) => {
+
+    const payload = linkNotesSchema.parse(req.body);
+
+    const result = await linkCourseNotesService(
+        req.params.id as string,
+        payload.notesId,
+        payload.order
+    );
+
+    return successResponse(res, "Notes linked to course successfully", result, 201);
+
+});
+
+export const unlinkCourseNotes = asyncHandler(async (req: Request, res: Response) => {
+
+    const result = await unlinkCourseNotesService(
+        req.params.id as string,
+        req.params.notesId as string
+    );
+
+    return successResponse(res, "Notes unlinked from course successfully", result);
+
+});
+
+export const linkCourseMcqTest = asyncHandler(async (req: Request, res: Response) => {
+
+    const payload = linkMcqTestSchema.parse(req.body);
+
+    const result = await linkCourseMcqTestService(
+        req.params.id as string,
+        payload.testId,
+        payload.order
+    );
+
+    return successResponse(res, "MCQ test linked to course successfully", result, 201);
+
+});
+
+export const unlinkCourseMcqTest = asyncHandler(async (req: Request, res: Response) => {
+
+    const result = await unlinkCourseMcqTestService(
+        req.params.id as string,
+        req.params.testId as string
+    );
+
+    return successResponse(res, "MCQ test unlinked from course successfully", result);
+
+});

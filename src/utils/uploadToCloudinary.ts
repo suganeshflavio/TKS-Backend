@@ -51,3 +51,37 @@ export const deleteFromCloudinary = async (publicId: string): Promise<void> => {
     });
 
 };
+
+export const uploadImageToCloudinary = (
+  file: Express.Multer.File,
+  folder: string
+): Promise<CloudinaryUploadResult> => {
+
+  return new Promise((resolve, reject) => {
+
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        resource_type: "image",
+        use_filename: true,
+        unique_filename: true,
+      },
+      (error, result?: UploadApiResponse) => {
+
+        if (error || !result) {
+          return reject(error ?? new Error("Cloudinary upload failed"));
+        }
+
+        resolve({
+          publicId: result.public_id,
+          url: result.secure_url,
+        });
+
+      }
+    );
+
+    stream.end(file.buffer);
+
+  });
+
+};
