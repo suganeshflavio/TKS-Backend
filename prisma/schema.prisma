@@ -394,6 +394,25 @@ model Testimonial {
   @@index([userId])
 }
 
+model Enquiry {
+  id String @id @default(cuid())
+
+  name String
+
+  email String
+
+  category String
+
+  message String
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([email])
+}
+
 model UserAccess {
   id String @id @default(cuid())
 
