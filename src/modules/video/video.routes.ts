@@ -29,8 +29,6 @@ router.get(
 
   authenticate,
 
-  isAdmin,
-
   getVideos,
 );
 
@@ -41,7 +39,7 @@ router.post(
     createVideo
 );
 
-router.get("/:id", authenticate, isAdmin, getVideoById);
+router.get("/:id", authenticate, getVideoById);
 
 router.put(
   "/:id",

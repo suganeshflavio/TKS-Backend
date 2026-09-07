@@ -15,9 +15,9 @@ const router = Router();
 
 router.post("/", authenticate, isAdmin, createSubject);
 
-router.get("/", authenticate, isAdmin, getSubjects);
+router.get("/", authenticate, getSubjects);
 
-router.get("/:id", authenticate, isAdmin, getSubjectById);
+router.get("/:id", authenticate, getSubjectById);
 
 router.put("/:id", authenticate, isAdmin, updateSubject);
 

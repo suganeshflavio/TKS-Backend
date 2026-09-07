@@ -14,11 +14,11 @@ import {
 
 const router = Router();
 
-router.get("/", authenticate, isAdmin, getNotesList);
+router.get("/", authenticate, getNotesList);
 
 router.post("/", authenticate, isAdmin, upload.single("file"), createNotes);
 
-router.get("/:id", authenticate, isAdmin, getNotesById);
+router.get("/:id", authenticate, getNotesById);
 
 router.put("/:id", authenticate, isAdmin, upload.single("file"), updateNotes);
 

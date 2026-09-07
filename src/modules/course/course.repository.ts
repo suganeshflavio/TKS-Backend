@@ -86,6 +86,9 @@ const courseDetailInclude = {
         include: {
             subject: {
                 select: { id: true, name: true }
+            },
+            class: {
+                select: { id: true, name: true }
             }
         }
     },
@@ -217,6 +220,10 @@ export const getSubjectByIdRepository = async (subjectId: string) => {
     return prisma.subject.findUnique({ where: { id: subjectId } });
 };
 
+export const getClassByIdRepository = async (classId: string) => {
+    return prisma.class.findUnique({ where: { id: classId } });
+};
+
 export const getVideoByIdRepository = async (videoId: string) => {
     return prisma.video.findUnique({ where: { id: videoId } });
 };
@@ -232,33 +239,35 @@ export const getMcqTestByIdRepository = async (testId: string) => {
 export const linkSubjectRepository = async (
     courseId: string,
     subjectId: string,
-    order?: number
+    order?: number,
+    classId?: string
 ) => {
 
     return prisma.courseSubject.create({
-        data: { courseId, subjectId, order }
+        data: { courseId, subjectId, order, classId: classId ?? null }
     });
 
 };
 
 export const unlinkSubjectRepository = async (
     courseId: string,
-    subjectId: string
+    courseSubjectId: string
 ) => {
 
     await prisma.courseSubject.deleteMany({
-        where: { courseId, subjectId }
+        where: { id: courseSubjectId, courseId }
     });
 
 };
 
 export const findCourseSubjectRepository = async (
     courseId: string,
-    subjectId: string
+    subjectId: string,
+    classId?: string
 ) => {
 
-    return prisma.courseSubject.findUnique({
-        where: { courseId_subjectId: { courseId, subjectId } }
+    return prisma.courseSubject.findFirst({
+        where: { courseId, subjectId, classId: classId ?? null }
     });
 
 };

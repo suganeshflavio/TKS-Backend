@@ -207,7 +207,8 @@ export const linkCourseSubject = asyncHandler(async (req: Request, res: Response
     const result = await linkCourseSubjectService(
         req.params.id as string,
         payload.subjectId,
-        payload.order
+        payload.order,
+        payload.classId
     );
 
     return successResponse(res, "Subject linked to course successfully", result, 201);
@@ -218,7 +219,7 @@ export const unlinkCourseSubject = asyncHandler(async (req: Request, res: Respon
 
     const result = await unlinkCourseSubjectService(
         req.params.id as string,
-        req.params.subjectId as string
+        req.params.linkId as string
     );
 
     return successResponse(res, "Subject unlinked from course successfully", result);

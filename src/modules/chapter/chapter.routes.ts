@@ -15,9 +15,9 @@ const router = Router();
 
 router.post("/", authenticate, isAdmin, createChapter);
 
-router.get("/", authenticate, isAdmin, getChapters);
+router.get("/", authenticate, getChapters);
 
-router.get("/:id", authenticate, isAdmin, getChapterById);
+router.get("/:id", authenticate, getChapterById);
 
 router.put("/:id", authenticate, isAdmin, updateChapter);
 

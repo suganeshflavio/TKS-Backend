@@ -21,9 +21,9 @@ const router = Router();
 
 router.post("/", authenticate, isAdmin, createTopic);
 
-router.get("/", authenticate, isAdmin, getTopics);
+router.get("/", authenticate, getTopics);
 
-router.get("/:id", authenticate, isAdmin, getTopicById);
+router.get("/:id", authenticate, getTopicById);
 
 router.put("/:id", authenticate, isAdmin, updateTopic);
 

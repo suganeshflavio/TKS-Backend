@@ -50,6 +50,8 @@ export const linkSubjectSchema = z.object({
 
     subjectId: z.string().min(1, "subjectId is required"),
 
+    classId: z.string().min(1).optional(),
+
     order: z.coerce.number().optional()
 
 });

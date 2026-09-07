@@ -48,8 +48,6 @@ router.get(
 
     authenticate,
 
-    isAdmin,
-
     getCourseById
 
 );
@@ -71,7 +69,7 @@ router.delete("/:id", authenticate, isAdmin, deleteCourse);
 router.delete("/:id/permanent", authenticate, isAdmin, permanentDeleteCourse);
 
 router.post("/:id/subjects", authenticate, isAdmin, linkCourseSubject);
-router.delete("/:id/subjects/:subjectId", authenticate, isAdmin, unlinkCourseSubject);
+router.delete("/:id/subjects/:linkId", authenticate, isAdmin, unlinkCourseSubject);
 
 router.post("/:id/videos", authenticate, isAdmin, linkCourseVideo);
 router.delete("/:id/videos/:videoId", authenticate, isAdmin, unlinkCourseVideo);

@@ -15,9 +15,9 @@ const router = Router();
 
 router.post("/", authenticate, isAdmin, createClass);
 
-router.get("/", authenticate, isAdmin, getClasses);
+router.get("/", authenticate, getClasses);
 
-router.get("/:id", authenticate, isAdmin, getClassById);
+router.get("/:id", authenticate, getClassById);
 
 router.put("/:id", authenticate, isAdmin, updateClass);
 

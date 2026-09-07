@@ -149,6 +149,7 @@ export const getUserAccessByUserIdService = async (
       name: true,
       email: true,
       mobile: true,
+      class: true,
     },
   });
 

@@ -106,6 +106,8 @@ model Class {
 
   chapters Chapter[]
 
+  courseSubjects CourseSubject[]
+
   @@unique([subjectId, name])
   @@index([subjectId])
 }
@@ -268,6 +270,13 @@ model CourseSubject {
 
   subjectId String
 
+  // Optional: scopes this link to one Class of the subject (e.g. a course
+  // that only teaches 11th-grade English). Null means unrestricted — the
+  // app falls back to auto-resolving the class from the student's profile.
+  // Linking the same subject multiple times with different classIds lets a
+  // single course bundle more than one grade of the same subject.
+  classId String?
+
   order Int?
 
   createdAt DateTime @default(now())
@@ -276,9 +285,12 @@ model CourseSubject {
 
   subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
-  @@unique([courseId, subjectId])
+  class Class? @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, subjectId, classId])
   @@index([courseId])
   @@index([subjectId])
+  @@index([classId])
 }
 
 model CourseVideo {

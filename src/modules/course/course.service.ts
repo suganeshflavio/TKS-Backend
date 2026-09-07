@@ -11,6 +11,7 @@ import {
     setCourseActiveRepository,
     permanentDeleteCourseRepository,
     getSubjectByIdRepository,
+    getClassByIdRepository,
     getVideoByIdRepository,
     getNotesByIdRepository,
     getMcqTestByIdRepository,
@@ -238,7 +239,8 @@ const ensureCourseExists = async (courseId: string) => {
 export const linkCourseSubjectService = async (
     courseId: string,
     subjectId: string,
-    order?: number
+    order?: number,
+    classId?: string
 ) => {
 
     await ensureCourseExists(courseId);
@@ -249,26 +251,40 @@ export const linkCourseSubjectService = async (
         throw new AppError("Subject not found", 404);
     }
 
-    const existing = await findCourseSubjectRepository(courseId, subjectId);
+    if (classId) {
 
-    if (existing) {
-        throw new AppError("Subject already linked to this course", 409);
+        const klass = await getClassByIdRepository(classId);
+
+        if (!klass) {
+            throw new AppError("Class not found", 404);
+        }
+
+        if (klass.subjectId !== subjectId) {
+            throw new AppError("Class does not belong to this subject", 400);
+        }
+
     }
 
-    return linkSubjectRepository(courseId, subjectId, order);
+    const existing = await findCourseSubjectRepository(courseId, subjectId, classId);
+
+    if (existing) {
+        throw new AppError("Subject already linked to this course for that class", 409);
+    }
+
+    return linkSubjectRepository(courseId, subjectId, order, classId);
 
 };
 
 export const unlinkCourseSubjectService = async (
     courseId: string,
-    subjectId: string
+    courseSubjectId: string
 ) => {
 
     await ensureCourseExists(courseId);
 
-    await unlinkSubjectRepository(courseId, subjectId);
+    await unlinkSubjectRepository(courseId, courseSubjectId);
 
-    return { courseId, subjectId };
+    return { courseId, courseSubjectId };
 
 };
 
