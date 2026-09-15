@@ -108,6 +108,12 @@ model Class {
 
   courseSubjects CourseSubject[]
 
+  courseVideos CourseVideo[]
+
+  courseNotes CourseNotes[]
+
+  courseMcqTests CourseMcqTest[]
+
   @@unique([subjectId, name])
   @@index([subjectId])
 }
@@ -300,6 +306,11 @@ model CourseVideo {
 
   videoId String
 
+  // Optional: which Class this grant is for (same rationale as
+  // CourseSubject.classId — a video can appear under more than one class's
+  // topics, so this disambiguates which one the course is granting).
+  classId String?
+
   order Int?
 
   isActive Boolean @default(true)
@@ -310,9 +321,12 @@ model CourseVideo {
 
   video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
-  @@unique([courseId, videoId])
+  class Class? @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, videoId, classId])
   @@index([courseId])
   @@index([videoId])
+  @@index([classId])
 }
 
 model CourseNotes {
@@ -321,6 +335,9 @@ model CourseNotes {
   courseId String
 
   notesId String
+
+  // See CourseVideo.classId.
+  classId String?
 
   order Int?
 
@@ -332,9 +349,12 @@ model CourseNotes {
 
   notes Notes @relation(fields: [notesId], references: [id], onDelete: Cascade)
 
-  @@unique([courseId, notesId])
+  class Class? @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, notesId, classId])
   @@index([courseId])
   @@index([notesId])
+  @@index([classId])
 }
 
 model CourseMcqTest {
@@ -343,6 +363,9 @@ model CourseMcqTest {
   courseId String
 
   testId String
+
+  // See CourseVideo.classId.
+  classId String?
 
   order Int?
 
@@ -354,9 +377,12 @@ model CourseMcqTest {
 
   test TestQuestion @relation(fields: [testId], references: [id], onDelete: Cascade)
 
-  @@unique([courseId, testId])
+  class Class? @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, testId, classId])
   @@index([courseId])
   @@index([testId])
+  @@index([classId])
 }
 
 model Comment {

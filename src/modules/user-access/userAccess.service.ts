@@ -40,12 +40,10 @@ export const assignUserAccessService = async (
 
     for (const videoId of courseItem.videoIds ?? []) {
 
-      const courseVideo = await prisma.courseVideo.findUnique({
+      const courseVideo = await prisma.courseVideo.findFirst({
         where: {
-          courseId_videoId: {
-            courseId: courseItem.courseId,
-            videoId,
-          },
+          courseId: courseItem.courseId,
+          videoId,
         },
       });
 
@@ -68,12 +66,10 @@ export const assignUserAccessService = async (
 
     for (const notesId of courseItem.notesIds ?? []) {
 
-      const courseNotes = await prisma.courseNotes.findUnique({
+      const courseNotes = await prisma.courseNotes.findFirst({
         where: {
-          courseId_notesId: {
-            courseId: courseItem.courseId,
-            notesId,
-          },
+          courseId: courseItem.courseId,
+          notesId,
         },
       });
 
@@ -96,12 +92,10 @@ export const assignUserAccessService = async (
 
     for (const testId of courseItem.testIds ?? []) {
 
-      const courseMcqTest = await prisma.courseMcqTest.findUnique({
+      const courseMcqTest = await prisma.courseMcqTest.findFirst({
         where: {
-          courseId_testId: {
-            courseId: courseItem.courseId,
-            testId,
-          },
+          courseId: courseItem.courseId,
+          testId,
         },
       });
 

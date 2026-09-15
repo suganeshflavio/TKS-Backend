@@ -288,10 +288,23 @@ export const unlinkCourseSubjectService = async (
 
 };
 
+const ensureClassExists = async (classId?: string) => {
+
+    if (!classId) return;
+
+    const klass = await getClassByIdRepository(classId);
+
+    if (!klass) {
+        throw new AppError("Class not found", 404);
+    }
+
+};
+
 export const linkCourseVideoService = async (
     courseId: string,
     videoId: string,
-    order?: number
+    order?: number,
+    classId?: string
 ) => {
 
     await ensureCourseExists(courseId);
@@ -302,33 +315,36 @@ export const linkCourseVideoService = async (
         throw new AppError("Video not found", 404);
     }
 
-    const existing = await findCourseVideoRepository(courseId, videoId);
+    await ensureClassExists(classId);
+
+    const existing = await findCourseVideoRepository(courseId, videoId, classId);
 
     if (existing) {
-        throw new AppError("Video already linked to this course", 409);
+        throw new AppError("Video already linked to this course for that class", 409);
     }
 
-    return linkVideoRepository(courseId, videoId, order);
+    return linkVideoRepository(courseId, videoId, order, classId);
 
 };
 
 export const unlinkCourseVideoService = async (
     courseId: string,
-    videoId: string
+    courseVideoId: string
 ) => {
 
     await ensureCourseExists(courseId);
 
-    await unlinkVideoRepository(courseId, videoId);
+    await unlinkVideoRepository(courseId, courseVideoId);
 
-    return { courseId, videoId };
+    return { courseId, courseVideoId };
 
 };
 
 export const linkCourseNotesService = async (
     courseId: string,
     notesId: string,
-    order?: number
+    order?: number,
+    classId?: string
 ) => {
 
     await ensureCourseExists(courseId);
@@ -339,33 +355,36 @@ export const linkCourseNotesService = async (
         throw new AppError("Notes not found", 404);
     }
 
-    const existing = await findCourseNotesRepository(courseId, notesId);
+    await ensureClassExists(classId);
+
+    const existing = await findCourseNotesRepository(courseId, notesId, classId);
 
     if (existing) {
-        throw new AppError("Notes already linked to this course", 409);
+        throw new AppError("Notes already linked to this course for that class", 409);
     }
 
-    return linkNotesRepository(courseId, notesId, order);
+    return linkNotesRepository(courseId, notesId, order, classId);
 
 };
 
 export const unlinkCourseNotesService = async (
     courseId: string,
-    notesId: string
+    courseNotesId: string
 ) => {
 
     await ensureCourseExists(courseId);
 
-    await unlinkNotesRepository(courseId, notesId);
+    await unlinkNotesRepository(courseId, courseNotesId);
 
-    return { courseId, notesId };
+    return { courseId, courseNotesId };
 
 };
 
 export const linkCourseMcqTestService = async (
     courseId: string,
     testId: string,
-    order?: number
+    order?: number,
+    classId?: string
 ) => {
 
     await ensureCourseExists(courseId);
@@ -376,25 +395,27 @@ export const linkCourseMcqTestService = async (
         throw new AppError("MCQ test not found", 404);
     }
 
-    const existing = await findCourseMcqTestRepository(courseId, testId);
+    await ensureClassExists(classId);
+
+    const existing = await findCourseMcqTestRepository(courseId, testId, classId);
 
     if (existing) {
-        throw new AppError("MCQ test already linked to this course", 409);
+        throw new AppError("MCQ test already linked to this course for that class", 409);
     }
 
-    return linkMcqTestRepository(courseId, testId, order);
+    return linkMcqTestRepository(courseId, testId, order, classId);
 
 };
 
 export const unlinkCourseMcqTestService = async (
     courseId: string,
-    testId: string
+    courseMcqTestId: string
 ) => {
 
     await ensureCourseExists(courseId);
 
-    await unlinkMcqTestRepository(courseId, testId);
+    await unlinkMcqTestRepository(courseId, courseMcqTestId);
 
-    return { courseId, testId };
+    return { courseId, courseMcqTestId };
 
 };

@@ -98,6 +98,9 @@ const courseDetailInclude = {
         include: {
             video: {
                 select: { id: true, videoName: true, isActive: true }
+            },
+            class: {
+                select: { id: true, name: true }
             }
         }
     },
@@ -107,6 +110,9 @@ const courseDetailInclude = {
         include: {
             notes: {
                 select: { id: true, title: true, isActive: true }
+            },
+            class: {
+                select: { id: true, name: true }
             }
         }
     },
@@ -116,6 +122,9 @@ const courseDetailInclude = {
         include: {
             test: {
                 select: { id: true, testName: true }
+            },
+            class: {
+                select: { id: true, name: true }
             }
         }
     }
@@ -275,33 +284,35 @@ export const findCourseSubjectRepository = async (
 export const linkVideoRepository = async (
     courseId: string,
     videoId: string,
-    order?: number
+    order?: number,
+    classId?: string
 ) => {
 
     return prisma.courseVideo.create({
-        data: { courseId, videoId, order }
+        data: { courseId, videoId, order, classId: classId ?? null }
     });
 
 };
 
 export const unlinkVideoRepository = async (
     courseId: string,
-    videoId: string
+    courseVideoId: string
 ) => {
 
     await prisma.courseVideo.deleteMany({
-        where: { courseId, videoId }
+        where: { id: courseVideoId, courseId }
     });
 
 };
 
 export const findCourseVideoRepository = async (
     courseId: string,
-    videoId: string
+    videoId: string,
+    classId?: string
 ) => {
 
-    return prisma.courseVideo.findUnique({
-        where: { courseId_videoId: { courseId, videoId } }
+    return prisma.courseVideo.findFirst({
+        where: { courseId, videoId, classId: classId ?? null }
     });
 
 };
@@ -309,33 +320,35 @@ export const findCourseVideoRepository = async (
 export const linkNotesRepository = async (
     courseId: string,
     notesId: string,
-    order?: number
+    order?: number,
+    classId?: string
 ) => {
 
     return prisma.courseNotes.create({
-        data: { courseId, notesId, order }
+        data: { courseId, notesId, order, classId: classId ?? null }
     });
 
 };
 
 export const unlinkNotesRepository = async (
     courseId: string,
-    notesId: string
+    courseNotesId: string
 ) => {
 
     await prisma.courseNotes.deleteMany({
-        where: { courseId, notesId }
+        where: { id: courseNotesId, courseId }
     });
 
 };
 
 export const findCourseNotesRepository = async (
     courseId: string,
-    notesId: string
+    notesId: string,
+    classId?: string
 ) => {
 
-    return prisma.courseNotes.findUnique({
-        where: { courseId_notesId: { courseId, notesId } }
+    return prisma.courseNotes.findFirst({
+        where: { courseId, notesId, classId: classId ?? null }
     });
 
 };
@@ -343,33 +356,35 @@ export const findCourseNotesRepository = async (
 export const linkMcqTestRepository = async (
     courseId: string,
     testId: string,
-    order?: number
+    order?: number,
+    classId?: string
 ) => {
 
     return prisma.courseMcqTest.create({
-        data: { courseId, testId, order }
+        data: { courseId, testId, order, classId: classId ?? null }
     });
 
 };
 
 export const unlinkMcqTestRepository = async (
     courseId: string,
-    testId: string
+    courseMcqTestId: string
 ) => {
 
     await prisma.courseMcqTest.deleteMany({
-        where: { courseId, testId }
+        where: { id: courseMcqTestId, courseId }
     });
 
 };
 
 export const findCourseMcqTestRepository = async (
     courseId: string,
-    testId: string
+    testId: string,
+    classId?: string
 ) => {
 
-    return prisma.courseMcqTest.findUnique({
-        where: { courseId_testId: { courseId, testId } }
+    return prisma.courseMcqTest.findFirst({
+        where: { courseId, testId, classId: classId ?? null }
     });
 
 };

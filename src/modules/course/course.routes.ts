@@ -72,12 +72,12 @@ router.post("/:id/subjects", authenticate, isAdmin, linkCourseSubject);
 router.delete("/:id/subjects/:linkId", authenticate, isAdmin, unlinkCourseSubject);
 
 router.post("/:id/videos", authenticate, isAdmin, linkCourseVideo);
-router.delete("/:id/videos/:videoId", authenticate, isAdmin, unlinkCourseVideo);
+router.delete("/:id/videos/:linkId", authenticate, isAdmin, unlinkCourseVideo);
 
 router.post("/:id/notes", authenticate, isAdmin, linkCourseNotes);
-router.delete("/:id/notes/:notesId", authenticate, isAdmin, unlinkCourseNotes);
+router.delete("/:id/notes/:linkId", authenticate, isAdmin, unlinkCourseNotes);
 
 router.post("/:id/mcq-tests", authenticate, isAdmin, linkCourseMcqTest);
-router.delete("/:id/mcq-tests/:testId", authenticate, isAdmin, unlinkCourseMcqTest);
+router.delete("/:id/mcq-tests/:linkId", authenticate, isAdmin, unlinkCourseMcqTest);
 
 export default router;

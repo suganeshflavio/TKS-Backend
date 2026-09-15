@@ -60,6 +60,8 @@ export const linkVideoSchema = z.object({
 
     videoId: z.string().min(1, "videoId is required"),
 
+    classId: z.string().min(1).optional(),
+
     order: z.coerce.number().optional()
 
 });
@@ -68,6 +70,8 @@ export const linkNotesSchema = z.object({
 
     notesId: z.string().min(1, "notesId is required"),
 
+    classId: z.string().min(1).optional(),
+
     order: z.coerce.number().optional()
 
 });
@@ -75,6 +79,8 @@ export const linkNotesSchema = z.object({
 export const linkMcqTestSchema = z.object({
 
     testId: z.string().min(1, "testId is required"),
+
+    classId: z.string().min(1).optional(),
 
     order: z.coerce.number().optional()
 
