@@ -7,6 +7,7 @@ import { resolveIsActive } from "../../utils/resolveIsActive";
 
 import {
     createCourseSchema,
+    linkTopicSchema,
     linkMcqTestSchema,
     linkNotesSchema,
     linkSubjectSchema,
@@ -22,6 +23,8 @@ import {
     permanentDeleteCourseService,
     linkCourseSubjectService,
     unlinkCourseSubjectService,
+    linkCourseTopicService,
+    unlinkCourseTopicService,
     linkCourseVideoService,
     unlinkCourseVideoService,
     linkCourseNotesService,
@@ -223,6 +226,31 @@ export const unlinkCourseSubject = asyncHandler(async (req: Request, res: Respon
     );
 
     return successResponse(res, "Subject unlinked from course successfully", result);
+
+});
+
+export const linkCourseTopic = asyncHandler(async (req: Request, res: Response) => {
+
+    const payload = linkTopicSchema.parse(req.body);
+
+    const result = await linkCourseTopicService(
+        req.params.id as string,
+        payload.topicId,
+        payload.order
+    );
+
+    return successResponse(res, "Topic linked to course successfully", result, 201);
+
+});
+
+export const unlinkCourseTopic = asyncHandler(async (req: Request, res: Response) => {
+
+    const result = await unlinkCourseTopicService(
+        req.params.id as string,
+        req.params.linkId as string
+    );
+
+    return successResponse(res, "Topic unlinked from course successfully", result);
 
 });
 

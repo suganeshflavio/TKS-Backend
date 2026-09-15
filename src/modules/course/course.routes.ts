@@ -9,6 +9,8 @@ import {
     permanentDeleteCourse,
     linkCourseSubject,
     unlinkCourseSubject,
+    linkCourseTopic,
+    unlinkCourseTopic,
     linkCourseVideo,
     unlinkCourseVideo,
     linkCourseNotes,
@@ -70,6 +72,9 @@ router.delete("/:id/permanent", authenticate, isAdmin, permanentDeleteCourse);
 
 router.post("/:id/subjects", authenticate, isAdmin, linkCourseSubject);
 router.delete("/:id/subjects/:linkId", authenticate, isAdmin, unlinkCourseSubject);
+
+router.post("/:id/topics", authenticate, isAdmin, linkCourseTopic);
+router.delete("/:id/topics/:linkId", authenticate, isAdmin, unlinkCourseTopic);
 
 router.post("/:id/videos", authenticate, isAdmin, linkCourseVideo);
 router.delete("/:id/videos/:linkId", authenticate, isAdmin, unlinkCourseVideo);

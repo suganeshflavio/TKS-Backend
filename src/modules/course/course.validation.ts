@@ -56,6 +56,14 @@ export const linkSubjectSchema = z.object({
 
 });
 
+export const linkTopicSchema = z.object({
+
+    topicId: z.string().min(1, "topicId is required"),
+
+    order: z.coerce.number().optional()
+
+});
+
 export const linkVideoSchema = z.object({
 
     videoId: z.string().min(1, "videoId is required"),

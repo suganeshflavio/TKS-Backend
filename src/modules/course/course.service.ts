@@ -12,12 +12,16 @@ import {
     permanentDeleteCourseRepository,
     getSubjectByIdRepository,
     getClassByIdRepository,
+    getTopicByIdRepository,
     getVideoByIdRepository,
     getNotesByIdRepository,
     getMcqTestByIdRepository,
     linkSubjectRepository,
     unlinkSubjectRepository,
     findCourseSubjectRepository,
+    linkTopicRepository,
+    unlinkTopicRepository,
+    findCourseTopicRepository,
     linkVideoRepository,
     unlinkVideoRepository,
     findCourseVideoRepository,
@@ -285,6 +289,43 @@ export const unlinkCourseSubjectService = async (
     await unlinkSubjectRepository(courseId, courseSubjectId);
 
     return { courseId, courseSubjectId };
+
+};
+
+export const linkCourseTopicService = async (
+    courseId: string,
+    topicId: string,
+    order?: number
+) => {
+
+    await ensureCourseExists(courseId);
+
+    const topic = await getTopicByIdRepository(topicId);
+
+    if (!topic) {
+        throw new AppError("Topic not found", 404);
+    }
+
+    const existing = await findCourseTopicRepository(courseId, topicId);
+
+    if (existing) {
+        throw new AppError("Topic already linked to this course", 409);
+    }
+
+    return linkTopicRepository(courseId, topicId, order);
+
+};
+
+export const unlinkCourseTopicService = async (
+    courseId: string,
+    courseTopicId: string
+) => {
+
+    await ensureCourseExists(courseId);
+
+    await unlinkTopicRepository(courseId, courseTopicId);
+
+    return { courseId, courseTopicId };
 
 };
 

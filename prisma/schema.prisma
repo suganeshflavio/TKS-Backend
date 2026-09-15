@@ -162,6 +162,8 @@ model Topic {
 
   notes Notes[]
 
+  courseTopics CourseTopic[]
+
   @@index([chapterId])
 }
 
@@ -262,6 +264,8 @@ model Course {
 
   subjects CourseSubject[]
 
+  topics CourseTopic[]
+
   videos CourseVideo[]
 
   notes CourseNotes[]
@@ -297,6 +301,33 @@ model CourseSubject {
   @@index([courseId])
   @@index([subjectId])
   @@index([classId])
+}
+
+// A Topic belongs to exactly one Chapter -> Class -> Subject, so linking a
+// Topic directly is unambiguous. This is the primary way a course now
+// grants access to the Subject/Class/Chapter/Topic hierarchy in the admin
+// UI — the Subject/Class/Chapter pickers there are just how you find the
+// Topic, not separate grants of their own.
+model CourseTopic {
+  id String @id @default(cuid())
+
+  courseId String
+
+  topicId String
+
+  order Int?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, topicId])
+  @@index([courseId])
+  @@index([topicId])
 }
 
 model CourseVideo {

@@ -93,6 +93,31 @@ const courseDetailInclude = {
         }
     },
 
+    topics: {
+        orderBy: { order: "asc" as const },
+        include: {
+            topic: {
+                select: {
+                    id: true,
+                    name: true,
+                    chapter: {
+                        select: {
+                            id: true,
+                            name: true,
+                            class: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    subject: { select: { id: true, name: true } }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
     videos: {
         orderBy: { order: "asc" as const },
         include: {
@@ -233,6 +258,10 @@ export const getClassByIdRepository = async (classId: string) => {
     return prisma.class.findUnique({ where: { id: classId } });
 };
 
+export const getTopicByIdRepository = async (topicId: string) => {
+    return prisma.topic.findUnique({ where: { id: topicId } });
+};
+
 export const getVideoByIdRepository = async (videoId: string) => {
     return prisma.video.findUnique({ where: { id: videoId } });
 };
@@ -277,6 +306,40 @@ export const findCourseSubjectRepository = async (
 
     return prisma.courseSubject.findFirst({
         where: { courseId, subjectId, classId: classId ?? null }
+    });
+
+};
+
+export const linkTopicRepository = async (
+    courseId: string,
+    topicId: string,
+    order?: number
+) => {
+
+    return prisma.courseTopic.create({
+        data: { courseId, topicId, order }
+    });
+
+};
+
+export const unlinkTopicRepository = async (
+    courseId: string,
+    courseTopicId: string
+) => {
+
+    await prisma.courseTopic.deleteMany({
+        where: { id: courseTopicId, courseId }
+    });
+
+};
+
+export const findCourseTopicRepository = async (
+    courseId: string,
+    topicId: string
+) => {
+
+    return prisma.courseTopic.findUnique({
+        where: { courseId_topicId: { courseId, topicId } }
     });
 
 };
