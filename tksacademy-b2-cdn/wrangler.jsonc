@@ -19,7 +19,7 @@
 		"enabled": true
 	},
 	"vars": {
-    "B2_BUCKET_NAME": "tksacademy-media",
+    "B2_BUCKET_NAME": "tksacademy-multimedia",
     "B2_DOWNLOAD_URL": "https://f005.backblazeb2.com"
   },
 	"upload_source_maps": true
