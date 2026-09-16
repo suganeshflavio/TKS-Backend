@@ -20,7 +20,10 @@
 	},
 	"vars": {
     "B2_BUCKET_NAME": "tksacademy-multimedia",
-    "B2_DOWNLOAD_URL": "https://f005.backblazeb2.com"
+    "B2_DOWNLOAD_URL": "https://f005.backblazeb2.com",
+	"B2_KEY_ID": "0055e70e1c777c60000000001",
+	"B2_APPLICATION_KEY": "K005RWxsyNP0JLoa5ATp1OXBYv4WLeQ"
+
   },
 	"upload_source_maps": true
 	/**
