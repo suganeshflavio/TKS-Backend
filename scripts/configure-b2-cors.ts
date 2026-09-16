@@ -48,8 +48,6 @@ const main = async () => {
           allowedOperations: [
             "b2_upload_file",
             "b2_upload_part",
-            "b2_download_file_by_name",
-            "b2_download_file_by_id",
           ],
           allowedHeaders: ["*"],
           exposeHeaders: ["x-bz-content-sha1", "x-bz-file-name"],
