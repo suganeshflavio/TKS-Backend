@@ -5,7 +5,7 @@ import { AppError } from "../../utils/errors/AppError";
 import { resolveIsActive } from "../../utils/resolveIsActive";
 import { createNotesSchema, updateNotesSchema } from "./notes.validation";
 import { UpdateNotesDto } from "./notes.types";
-import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
+import { uploadFileToB2 } from "../../utils/b2";
 import {
     createNotesService,
     deleteNotesService,
@@ -23,13 +23,12 @@ export const createNotes = asyncHandler(async (req: Request, res: Response) => {
         throw new AppError("Notes file is required", 400);
     }
 
-    const uploaded = await uploadToCloudinary(req.file, "notes");
+    const uploaded = await uploadFileToB2(req.file, "notes");
 
     const notes = await createNotesService({
         ...payload,
-        notesFileId: uploaded.publicId,
-        notesFileName: req.file.originalname,
-        notesUrl: uploaded.url
+        notesFileId: uploaded.fileId,
+        notesFileName: uploaded.fileName
     });
 
     return successResponse(res, "Notes Created Successfully", notes, 201);
@@ -70,11 +69,13 @@ export const updateNotes = asyncHandler(async (req: Request, res: Response) => {
 
     if (req.file) {
 
-        const uploaded = await uploadToCloudinary(req.file, "notes");
+        const uploaded = await uploadFileToB2(req.file, "notes");
 
-        data.notesFileId = uploaded.publicId;
-        data.notesFileName = req.file.originalname;
-        data.notesUrl = uploaded.url;
+        data.notesFileId = uploaded.fileId;
+        data.notesFileName = uploaded.fileName;
+        // Clear any legacy Cloudinary URL so enrichNotes always prefers the
+        // fresh B2-signed one once a note has a real B2 file.
+        data.notesUrl = null;
 
     }
 

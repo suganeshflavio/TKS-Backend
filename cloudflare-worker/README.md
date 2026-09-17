@@ -39,5 +39,5 @@ dev` local URL via `CDN_BASE_URL`) will work end-to-end before you deploy.
 - No B2 credentials live in the Worker — it only forwards the
   already-signed `Authorization` query param the backend generated, so
   there's nothing secret to configure beyond the download host.
-- PPT/PDF notes are **not** routed through this Worker — they stay on
-  Cloudinary's own CDN. Only video (B2) reads go through here.
+- Video, PDF notes, and inline rich-text images all live in the same B2
+  bucket and read through this Worker — nothing is on Cloudinary anymore.

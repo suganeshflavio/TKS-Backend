@@ -2,7 +2,7 @@ export interface CreateNotesDto {
 
     title: string;
 
-    notesUrl?: string;
+    notesUrl?: string | null;
 
     notesFileId?: string;
 

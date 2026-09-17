@@ -205,6 +205,22 @@ model Video {
   attempts StudentAttempt[]
 }
 
+// A B2 file backing an inline image/diagram embedded in rich-text content
+// (MCQ question/option/explanation HTML). The image's <img src> in that
+// stored HTML points at a stable `/api/uploads/image/:id` URL rather than a
+// raw B2 link, since B2 is a private bucket and signed URLs expire — this
+// row lets that stable URL redirect to a freshly-minted signed URL on every
+// request, the same way Video/Notes already resolve fresh URLs on read.
+model InlineImage {
+  id String @id @default(cuid())
+
+  fileId String
+
+  fileName String
+
+  createdAt DateTime @default(now())
+}
+
 model Notes {
   id String @id @default(cuid())
 

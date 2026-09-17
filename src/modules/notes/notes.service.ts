@@ -1,5 +1,5 @@
 import { AppError } from "../../utils/errors/AppError";
-import { deleteFromCloudinary } from "../../utils/uploadToCloudinary";
+import { deleteB2File, getB2SignedUrl } from "../../utils/b2";
 import { CreateNotesDto, GetNotesQueryDto, UpdateNotesDto } from "./notes.types";
 import {
     createNotesRepository,
@@ -9,6 +9,41 @@ import {
     setNotesActiveRepository,
     updateNotesRepository
 } from "./notes.repository";
+
+// All uploads go to B2, whose keys always look like "notes/<ts>-<name>".
+// Notes uploaded before the B2 migration have a bare Cloudinary public
+// id/original filename (no slash) in these same columns instead — those
+// still display fine (notesUrl was stored as a direct, permanent Cloudinary
+// URL), they just can't be deleted from Cloudinary via the app anymore.
+const isB2Key = (fileName?: string | null): fileName is string =>
+    !!fileName && fileName.includes("/");
+
+const enrichNotes = async <T extends {
+    notesFileName: string | null;
+    notesUrl: string | null;
+}>(notes: T) => {
+
+    const notesUrl = isB2Key(notes.notesFileName)
+        ? await getB2SignedUrl(notes.notesFileName)
+        : notes.notesUrl;
+
+    return {
+        ...notes,
+        notesUrl
+    };
+
+};
+
+const deleteOldNotesFile = async (
+    fileId: string,
+    fileName: string | null
+) => {
+
+    if (isB2Key(fileName)) {
+        await deleteB2File(fileId, fileName).catch(() => {});
+    }
+
+};
 
 export const createNotesService = async (
     payload: CreateNotesDto
@@ -28,9 +63,13 @@ export const getNotesListService = async (
 
     const result = await getNotesListRepository(query);
 
+    const notes = await Promise.all(result.notes.map(enrichNotes));
+
     return {
 
         ...result,
+
+        notes,
 
         page,
 
@@ -52,7 +91,7 @@ export const getNotesByIdService = async (
         throw new AppError("Notes not found", 404);
     }
 
-    return notes;
+    return enrichNotes(notes);
 
 };
 
@@ -75,7 +114,7 @@ export const updateNotesService = async (
         payload.notesFileId !== notes.notesFileId
     ) {
 
-        await deleteFromCloudinary(notes.notesFileId);
+        await deleteOldNotesFile(notes.notesFileId, notes.notesFileName);
 
     }
 
@@ -108,7 +147,7 @@ export const permanentDeleteNotesService = async (
     }
 
     if (notes.notesFileId) {
-        await deleteFromCloudinary(notes.notesFileId);
+        await deleteOldNotesFile(notes.notesFileId, notes.notesFileName);
     }
 
     await permanentDeleteNotesRepository(notesId);
