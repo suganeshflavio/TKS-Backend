@@ -1,8 +1,10 @@
-const B2_KEY_ID = process.env.B2_KEY_ID ?? "";
-const B2_APPLICATION_KEY = process.env.B2_APPLICATION_KEY ?? "";
+export const getB2KeyId = () => (process.env.B2_KEY_ID ?? "").trim();
+export const getB2ApplicationKey = () => (process.env.B2_APPLICATION_KEY ?? "").trim();
+export const getB2BucketId = () => (process.env.B2_BUCKET_ID ?? "").trim();
+export const getB2BucketName = () => (process.env.B2_BUCKET_NAME ?? "").trim();
 
-export const B2_BUCKET_ID = process.env.B2_BUCKET_ID ?? "";
-export const B2_BUCKET_NAME = process.env.B2_BUCKET_NAME ?? "";
+export const B2_BUCKET_ID = (process.env.B2_BUCKET_ID ?? "").trim();
+export const B2_BUCKET_NAME = (process.env.B2_BUCKET_NAME ?? "").trim();
 
 const B2_AUTHORIZE_URL =
   "https://api.backblazeb2.com/b2api/v2/b2_authorize_account";
@@ -22,8 +24,23 @@ export const authorizeB2 = async (): Promise<B2Session> => {
     return cachedSession;
   }
 
+  const keyId = getB2KeyId();
+  const appKey = getB2ApplicationKey();
+
+  if (!keyId || !appKey) {
+    throw new Error(
+      "Missing B2 credentials: B2_KEY_ID and B2_APPLICATION_KEY must be set in your environment variables.",
+    );
+  }
+
+  if (keyId.length <= 12) {
+    throw new Error(
+      `Invalid B2_KEY_ID "${keyId}": A 12-character Backblaze Account ID was provided instead of the 25-character Application Key ID (keyID). Please check your Backblaze App Keys page.`,
+    );
+  }
+
   const credentials = Buffer.from(
-    `${B2_KEY_ID}:${B2_APPLICATION_KEY}`,
+    `${keyId}:${appKey}`,
   ).toString("base64");
 
   const res = await fetch(B2_AUTHORIZE_URL, {

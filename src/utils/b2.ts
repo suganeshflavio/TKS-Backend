@@ -1,12 +1,12 @@
 import crypto from "crypto";
-import { authorizeB2, B2_BUCKET_ID, B2_BUCKET_NAME } from "../config/b2";
+import { authorizeB2, getB2BucketId, getB2BucketName, B2_BUCKET_ID, B2_BUCKET_NAME } from "../config/b2";
 
 const DEFAULT_SIGNED_URL_TTL_SECONDS = 60 * 60; // 1 hour
 
 // Once a Cloudflare Worker is deployed in front of B2 (see cloudflare-worker/),
 // set this to the Worker's custom domain to route reads through it instead of
 // hitting the raw *.backblazeb2.com host directly.
-const CDN_BASE_URL = process.env.CDN_BASE_URL?.replace(/\/$/, "");
+const getCdnBaseUrl = () => process.env.CDN_BASE_URL?.replace(/\/$/, "");
 
 export const sanitizeFileName = (name: string) => name.replace(/[^a-zA-Z0-9._-]/g, "_");
 
@@ -21,6 +21,7 @@ interface B2UploadUrl {
 export const getB2UploadUrl = async (): Promise<B2UploadUrl> => {
 
   const session = await authorizeB2();
+  const bucketId = getB2BucketId() || B2_BUCKET_ID;
 
   const res = await fetch(`${session.apiUrl}/b2api/v2/b2_get_upload_url`, {
     method: "POST",
@@ -28,7 +29,7 @@ export const getB2UploadUrl = async (): Promise<B2UploadUrl> => {
       Authorization: session.authorizationToken,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ bucketId: B2_BUCKET_ID })
+    body: JSON.stringify({ bucketId })
   });
 
   if (!res.ok) {
@@ -103,7 +104,7 @@ export const getB2SignedUrl = async (
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      bucketId: B2_BUCKET_ID,
+      bucketId: getB2BucketId() || B2_BUCKET_ID,
       fileNamePrefix: fileName,
       validDurationInSeconds
     })
@@ -114,10 +115,11 @@ export const getB2SignedUrl = async (
   }
 
   const data = await res.json();
+  const bucketName = getB2BucketName() || B2_BUCKET_NAME;
 
-  const path = `/file/${B2_BUCKET_NAME}/${encodeB2FileName(fileName)}?Authorization=${data.authorizationToken}`;
+  const path = `/file/${bucketName}/${encodeB2FileName(fileName)}?Authorization=${data.authorizationToken}`;
 
-  return `${CDN_BASE_URL || session.downloadUrl}${path}`;
+  return `${getCdnBaseUrl() || session.downloadUrl}${path}`;
 
 };
 
