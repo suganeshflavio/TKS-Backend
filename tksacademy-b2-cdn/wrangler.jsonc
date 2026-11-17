@@ -21,9 +21,10 @@
 	"vars": {
     "B2_BUCKET_NAME": "tksacademy-multimedia",
     "B2_DOWNLOAD_URL": "https://f005.backblazeb2.com",
-	"B2_KEY_ID": "0055e70e1c777c60000000001",
-	"B2_APPLICATION_KEY": "K005RWxsyNP0JLoa5ATp1OXBYv4WLeQ"
-
+    "B2_KEY_ID": "0055e70e1c777c60000000001",
+    "B2_APPLICATION_KEY": "K005RWxsyNP0JLoa5ATp1OXBYv4WLeQ",
+    "STREAM_SECRET": "tksacademysecretkey",
+    "ALLOWED_ORIGINS": "http://localhost:3000,http://localhost:3001,http://localhost:5173,https://tks-academy.vercel.app,https://ramars-academy.vercel.app"
   },
 	"upload_source_maps": true
 	/**

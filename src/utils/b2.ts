@@ -90,6 +90,36 @@ export const uploadFileToB2 = async (
 
 };
 
+/**
+ * Generates a protected, signed streaming URL for video playback.
+ * 
+ * - Does NOT expose raw Backblaze B2 authorization tokens.
+ * - Does NOT expose the B2 bucket name.
+ * - Signed with HMAC-SHA256 and expires after validDurationInSeconds (default 1 hour).
+ * - Verified by the Edge Cloudflare Worker which blocks direct browser address-bar copy-pasting.
+ */
+export const getVideoStreamUrl = (
+  fileName: string,
+  validDurationInSeconds = DEFAULT_SIGNED_URL_TTL_SECONDS
+): string => {
+  const cdnBase = getCdnBaseUrl();
+  const exp = Math.floor(Date.now() / 1000) + validDurationInSeconds;
+  const secret = process.env.STREAM_SECRET || process.env.JWT_SECRET || "tksacademysecretkey";
+
+  const signature = crypto
+    .createHmac("sha256", secret)
+    .update(`${fileName}:${exp}`)
+    .digest("hex");
+
+  if (cdnBase) {
+    return `${cdnBase}/stream/${encodeB2FileName(fileName)}?exp=${exp}&sig=${signature}`;
+  }
+
+  // Fallback to legacy direct URL if no CDN_BASE_URL is configured
+  const bucketName = getB2BucketName() || B2_BUCKET_NAME;
+  return `https://f005.backblazeb2.com/file/${bucketName}/${encodeB2FileName(fileName)}?exp=${exp}&sig=${signature}`;
+};
+
 export const getB2SignedUrl = async (
   fileName: string,
   validDurationInSeconds = DEFAULT_SIGNED_URL_TTL_SECONDS
