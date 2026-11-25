@@ -1,6 +1,6 @@
 import { AppError } from "../../utils/errors/AppError";
 import { CreateVideoDto, GetVideoQueryDto, UpdateVideoDto } from "./video.types";
-import { getVideoStreamUrl, getB2UploadUrl, sanitizeFileName, encodeB2FileName, deleteB2File } from "../../utils/b2";
+import { getB2SignedUrl, getVideoStreamUrl, getB2UploadUrl, sanitizeFileName, encodeB2FileName, deleteB2File } from "../../utils/b2";
 import {
     createVideoRepository,
     deactivateVideoAccessRepository,
@@ -16,7 +16,7 @@ const enrichVideo = async <T extends {
 }>(video: T) => {
 
     const videoUrl = video.videoFileName
-        ? getVideoStreamUrl(video.videoFileName)
+        ? await getB2SignedUrl(video.videoFileName)
         : null;
 
     return {
