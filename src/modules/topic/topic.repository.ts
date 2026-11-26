@@ -147,7 +147,15 @@ export const getTopicByIdRepository = async (
             },
 
             videos: {
-                select: { id: true, videoName: true, isActive: true }
+                select: {
+                    id: true,
+                    videoName: true,
+                    duration: true,
+                    description: true,
+                    isPreview: true,
+                    isActive: true,
+                    thumbnailFileName: true
+                }
             },
 
             mcqTests: {

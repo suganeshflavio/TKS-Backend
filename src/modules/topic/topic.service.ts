@@ -1,4 +1,5 @@
 import { AppError } from "../../utils/errors/AppError";
+import { resolveSignedUrl } from "../../utils/b2";
 import { CreateTopicDto, GetTopicQueryDto, UpdateTopicDto } from "./topic.types";
 import {
     createTopicRepository,
@@ -67,7 +68,17 @@ export const getTopicByIdService = async (
         throw new AppError("Topic not found", 404);
     }
 
-    return topic;
+    const videos = await Promise.all(
+        topic.videos.map(async (video) => ({
+            ...video,
+            thumbnailUrl: await resolveSignedUrl(video.thumbnailFileName)
+        }))
+    );
+
+    return {
+        ...topic,
+        videos
+    };
 
 };
 

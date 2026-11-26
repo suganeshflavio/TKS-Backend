@@ -1,8 +1,14 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { successResponse } from "../../utils/response";
+import { AppError } from "../../utils/errors/AppError";
 import { resolveIsActive } from "../../utils/resolveIsActive";
-import { createVideoSchema, updateVideoSchema, videoUploadUrlSchema } from "./video.validation";
+import {
+    createVideoSchema,
+    thumbnailUploadUrlSchema,
+    updateVideoSchema,
+    videoUploadUrlSchema
+} from "./video.validation";
 import {
     createVideoService,
     getVideosService,
@@ -10,7 +16,9 @@ import {
     getVideoByIdService,
     deleteVideoService,
     permanentDeleteVideoService,
-    requestVideoUploadUrlService
+    requestThumbnailUploadUrlService,
+    requestVideoUploadUrlService,
+    uploadVideoThumbnailService
 } from "./video.service";
 
 export const createVideo = asyncHandler(async (req: Request, res: Response) => {
@@ -154,6 +162,37 @@ export const requestVideoUploadUrl = asyncHandler(async (req: Request, res: Resp
         res,
         "Upload URL generated successfully",
         data
+    );
+
+});
+
+export const requestThumbnailUploadUrl = asyncHandler(async (req: Request, res: Response) => {
+
+    const payload = thumbnailUploadUrlSchema.parse(req.body);
+
+    const data = await requestThumbnailUploadUrlService(payload);
+
+    return successResponse(
+        res,
+        "Thumbnail upload URL generated successfully",
+        data
+    );
+
+});
+
+export const uploadVideoThumbnail = asyncHandler(async (req: Request, res: Response) => {
+
+    if (!req.file) {
+        throw new AppError("Thumbnail image file is required", 400);
+    }
+
+    const data = await uploadVideoThumbnailService(req.file);
+
+    return successResponse(
+        res,
+        "Thumbnail uploaded successfully",
+        data,
+        201
     );
 
 });

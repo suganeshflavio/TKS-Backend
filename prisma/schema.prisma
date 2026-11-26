@@ -183,6 +183,10 @@ model Video {
 
   videoSize Int?
 
+  thumbnailFileId String?
+
+  thumbnailFileName String?
+
   description String?
 
   duration String?

@@ -122,7 +122,14 @@ const courseDetailInclude = {
         orderBy: { order: "asc" as const },
         include: {
             video: {
-                select: { id: true, videoName: true, isActive: true }
+                select: {
+                    id: true,
+                    videoName: true,
+                    duration: true,
+                    isPreview: true,
+                    isActive: true,
+                    thumbnailFileName: true
+                }
             },
             class: {
                 select: { id: true, name: true }

@@ -1,6 +1,12 @@
 import { AppError } from "../../utils/errors/AppError";
 import { CreateVideoDto, GetVideoQueryDto, UpdateVideoDto } from "./video.types";
-import { getB2SignedUrl, getVideoStreamUrl, getB2UploadUrl, sanitizeFileName, encodeB2FileName, deleteB2File } from "../../utils/b2";
+import {
+    createPresignedB2UploadPayload,
+    deleteB2File,
+    resolveSignedUrl,
+    uploadFileToB2
+} from "../../utils/b2";
+import { THUMBNAIL_MIME_BY_EXT } from "./video.validation";
 import {
     createVideoRepository,
     deactivateVideoAccessRepository,
@@ -13,15 +19,18 @@ import {
 
 const enrichVideo = async <T extends {
     videoFileName: string | null;
+    thumbnailFileName: string | null;
 }>(video: T) => {
 
-    const videoUrl = video.videoFileName
-        ? await getB2SignedUrl(video.videoFileName)
-        : null;
+    const [videoUrl, thumbnailUrl] = await Promise.all([
+        resolveSignedUrl(video.videoFileName),
+        resolveSignedUrl(video.thumbnailFileName)
+    ]);
 
     return {
         ...video,
-        videoUrl
+        videoUrl,
+        thumbnailUrl
     };
 
 };
@@ -30,7 +39,9 @@ export const createVideoService = async (
     payload: CreateVideoDto
 ) => {
 
-    return createVideoRepository(payload);
+    const video = await createVideoRepository(payload);
+
+    return enrichVideo(video);
 
 };
 
@@ -103,6 +114,8 @@ export const updateVideoService = async (
 
     );
 
+    const cleanupDeletions: Promise<void>[] = [];
+
     if (
         payload.videoFileName &&
         video.videoFileId &&
@@ -110,7 +123,28 @@ export const updateVideoService = async (
         payload.videoFileName !== video.videoFileName
     ) {
 
-        await deleteB2File(video.videoFileId, video.videoFileName).catch(() => {});
+        cleanupDeletions.push(
+            deleteB2File(video.videoFileId, video.videoFileName).catch(() => {})
+        );
+
+    }
+
+    if (
+        payload.thumbnailFileName !== undefined &&
+        video.thumbnailFileId &&
+        video.thumbnailFileName &&
+        payload.thumbnailFileName !== video.thumbnailFileName
+    ) {
+
+        cleanupDeletions.push(
+            deleteB2File(video.thumbnailFileId, video.thumbnailFileName).catch(() => {})
+        );
+
+    }
+
+    if (cleanupDeletions.length > 0) {
+
+        await Promise.all(cleanupDeletions);
 
     }
 
@@ -120,7 +154,7 @@ export const updateVideoService = async (
 
     }
 
-    return updatedVideo;
+    return enrichVideo(updatedVideo);
 
 };
 
@@ -165,8 +199,18 @@ export const permanentDeleteVideoService = async (
         throw new AppError("Video not found", 404);
     }
 
+    const deletions: Promise<void>[] = [];
+
     if (video.videoFileId && video.videoFileName) {
-        await deleteB2File(video.videoFileId, video.videoFileName);
+        deletions.push(deleteB2File(video.videoFileId, video.videoFileName));
+    }
+
+    if (video.thumbnailFileId && video.thumbnailFileName) {
+        deletions.push(deleteB2File(video.thumbnailFileId, video.thumbnailFileName));
+    }
+
+    if (deletions.length > 0) {
+        await Promise.all(deletions);
     }
 
     await permanentDeleteVideoRepository(videoId);
@@ -179,19 +223,38 @@ export const requestVideoUploadUrlService = async (
     payload: { fileName: string }
 ) => {
 
-    const key = `videos/${Date.now()}-${sanitizeFileName(payload.fileName)}`;
+    return createPresignedB2UploadPayload("videos", payload.fileName, "video/mp4");
 
-    const { uploadUrl, authorizationToken } = await getB2UploadUrl();
+};
+
+export const requestThumbnailUploadUrlService = async (
+    payload: { fileName: string; contentType?: string }
+) => {
+
+    const ext = payload.fileName.split(".").pop()?.toLowerCase() as
+        | keyof typeof THUMBNAIL_MIME_BY_EXT
+        | undefined;
+
+    const contentType =
+        payload.contentType ??
+        (ext ? THUMBNAIL_MIME_BY_EXT[ext] : undefined) ??
+        "image/jpeg";
+
+    return createPresignedB2UploadPayload("video-thumbnails", payload.fileName, contentType);
+
+};
+
+export const uploadVideoThumbnailService = async (
+    file: Express.Multer.File
+) => {
+
+    const uploaded = await uploadFileToB2(file, "video-thumbnails");
+    const thumbnailUrl = await resolveSignedUrl(uploaded.fileName);
 
     return {
-        uploadUrl,
-        fileName: key,
-        headers: {
-            Authorization: authorizationToken,
-            "X-Bz-File-Name": encodeB2FileName(key),
-            "Content-Type": "video/mp4",
-            "X-Bz-Content-Sha1": "do_not_verify"
-        }
+        thumbnailFileId: uploaded.fileId,
+        thumbnailFileName: uploaded.fileName,
+        thumbnailUrl
     };
 
 };

@@ -8,6 +8,10 @@ export interface CreateVideoDto {
 
     videoSize?: number;
 
+    thumbnailFileId?: string | null;
+
+    thumbnailFileName?: string | null;
+
     description?: string;
 
     duration?: string;

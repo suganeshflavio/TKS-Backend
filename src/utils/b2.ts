@@ -153,6 +153,34 @@ export const getB2SignedUrl = async (
 
 };
 
+export const resolveSignedUrl = async (
+  fileName?: string | null,
+  validDurationInSeconds = DEFAULT_SIGNED_URL_TTL_SECONDS
+): Promise<string | null> => {
+  if (!fileName) return null;
+  return getB2SignedUrl(fileName, validDurationInSeconds);
+};
+
+export const createPresignedB2UploadPayload = async (
+  keyPrefix: string,
+  fileName: string,
+  contentType: string
+) => {
+  const key = `${keyPrefix}/${Date.now()}-${sanitizeFileName(fileName)}`;
+  const { uploadUrl, authorizationToken } = await getB2UploadUrl();
+
+  return {
+    uploadUrl,
+    fileName: key,
+    headers: {
+      Authorization: authorizationToken,
+      "X-Bz-File-Name": encodeB2FileName(key),
+      "Content-Type": contentType,
+      "X-Bz-Content-Sha1": "do_not_verify",
+    },
+  };
+};
+
 export const deleteB2File = async (
   fileId: string,
   fileName: string

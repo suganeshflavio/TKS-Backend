@@ -1,4 +1,5 @@
 import { AppError } from "../../utils/errors/AppError";
+import { resolveSignedUrl } from "../../utils/b2";
 import { GetCourseQueryDto } from "./course.types";
 import { deactivateCourseCascadeRepository, getCoursesRepository, updateCourseRepository } from "./course.repository";
 import { CreateCourseDto } from "./course.types";
@@ -114,7 +115,20 @@ export const getCourseByIdService = async (
 
     }
 
-    return course;
+    const videos = await Promise.all(
+        course.videos.map(async (item) => ({
+            ...item,
+            video: {
+                ...item.video,
+                thumbnailUrl: await resolveSignedUrl(item.video.thumbnailFileName)
+            }
+        }))
+    );
+
+    return {
+        ...course,
+        videos
+    };
 
 };
 

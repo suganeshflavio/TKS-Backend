@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authenticate } from "../../middleware/auth.middleware";
 import { isAdmin } from "../../middleware/admin.middleware";
+import { uploadImage } from "../../middleware/upload.middleware";
 
 import {
   createVideo,
@@ -9,7 +10,9 @@ import {
   updateVideo,
   deleteVideo,
   permanentDeleteVideo,
+  requestThumbnailUploadUrl,
   requestVideoUploadUrl,
+  uploadVideoThumbnail,
 } from "./video.controller";
 
 const router = Router();
@@ -22,6 +25,21 @@ router.post(
   isAdmin,
 
   requestVideoUploadUrl,
+);
+
+router.post(
+  "/thumbnail-upload-url",
+  authenticate,
+  isAdmin,
+  requestThumbnailUploadUrl,
+);
+
+router.post(
+  "/thumbnail",
+  authenticate,
+  isAdmin,
+  uploadImage.single("file"),
+  uploadVideoThumbnail,
 );
 
 router.get(

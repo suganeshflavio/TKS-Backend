@@ -1,4 +1,5 @@
 import prisma from "../../config/prisma";
+import { resolveSignedUrl } from "../../utils/b2";
 import { AppError } from "../../utils/errors/AppError";
 
 export const assignUserAccessService = async (
@@ -156,7 +157,7 @@ export const getUserAccessByUserIdService = async (
       where: { userId, isActive: true },
       include: {
         course: { select: { id: true, courseName: true } },
-        video: { select: { id: true, videoName: true } },
+        video: { select: { id: true, videoName: true, thumbnailFileName: true } },
       },
       orderBy: { createdAt: "asc" },
     }),
@@ -178,10 +179,27 @@ export const getUserAccessByUserIdService = async (
     }),
   ]);
 
+  const uniqueThumbnailNames = Array.from(
+    new Set(
+      videoAccesses
+        .map((access) => access.video.thumbnailFileName)
+        .filter((name): name is string => Boolean(name))
+    )
+  );
+  const signedThumbnails = await Promise.all(
+    uniqueThumbnailNames.map(async (name) => [name, await resolveSignedUrl(name)] as const)
+  );
+  const thumbnailUrlByName = new Map<string, string | null>(signedThumbnails);
+
   const courseMap = new Map<string, {
     courseId: string;
     courseName: string;
-    videos: { videoId: string; videoName: string }[];
+    videos: {
+      videoId: string;
+      videoName: string;
+      thumbnailFileName: string | null;
+      thumbnailUrl: string | null;
+    }[];
     notes: { notesId: string; title: string }[];
     mcqTests: { testId: string; testName: string }[];
   }>();
@@ -201,9 +219,12 @@ export const getUserAccessByUserIdService = async (
   };
 
   for (const access of videoAccesses) {
+    const thumbnailFileName = access.video.thumbnailFileName ?? null;
     getCourseEntry(access.course.id, access.course.courseName).videos.push({
       videoId: access.video.id,
       videoName: access.video.videoName,
+      thumbnailFileName,
+      thumbnailUrl: thumbnailFileName ? thumbnailUrlByName.get(thumbnailFileName) ?? null : null,
     });
   }
 
